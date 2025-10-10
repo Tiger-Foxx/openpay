@@ -1,0 +1,420 @@
+L'objectif est de réaliser un projet qui sera super utile à la communauté tech.
+
+Moi , Fox pour développer d'avantage mon portfolio j'ai pris l'habitude de travailler sur des solutions OpenSource et gratuites pour ma communauté tech. Et il s'avère que maintenant j'ai une Super idée !!!
+
+Je suis tombé sur un site du nom de salaires.dev qui est en fait un projet OpenSource où différent salariés du monde de la technologie informatique (très souvent des dev ou des architectes cloud, software engineer..etc) , viennent renseigner leurs salaires et ça permet aux autres d'en prendre connaissance, par exemple ils marquent leur boîte , leur ville , le salaire annuel moyen, leurs nombres d'années d'XP dans la boîte , leurs nombres d'années d'XP au total...etc.
+À l'heure où j'en parle il y en a plus de 700 et ça m'a été très utile pour connaître à peu près la tranche salariale en fonction des domaines, même si je sais qu'en vrai ça peut vraiment varier selon la ville, l'ancienneté etc et pleins d'autres critères mais ça peut donner un aperçu statistique interressant.
+
+Il s'avère que salaires.dev offre une API gratuite (avec un seul endpoint malheureusement qui permet de récupérer tout le monde d'un coup)
+
+Et moi je veux exploiter celà, en plus beau .. beaucoup plus beau .. plus organisé, avec une touche d'IA bien présente.
+
+Je m'explique ..
+
+L'objectif est de faire une plateforme ( en vrai il y aura juste un front end en react+vite ou en nextJS hébergé sur vercel sans besoin de backend , et possiblement une BD supabase gratuite qui va servir un peu plus tard je vais expliquer)
+
+La plateforme vraiment belle épurée superbe Design moderne qui respire la classe (ça me permettra de montrer mes skills en UX et en FrontEnd) , simple en surface mais avec des fonctionnalités vraiment de très haut niveau, un design blanc et noir super classe avec des lotties même si besoin et même des chargements super cools avec lotties.
+
+Bon ça c'était niveau UI vraiment moderne et bien faite même si elle est complexité est réaliser mais maintenant parlons réellement de ce que fais la plateforme ( je dois trouver aussi un nom cool à la plateforme tu fera des propositions).
+
+
+La plateforme a un champ de recherche central (champ de recherche qui peut switcher en champ de saisie instantanément mais on y reviendra) , c'est le cœur du système. L'utilisateur arrive , il saisit son métier ou son poste et pendant qu'il saisi le système lui fait des propositions (en fonction de ceux que l'on a déjà et on prévoira plus tard le cas où le métier qu'il tape n'est pas dans la liste) , si il voit dans la propositions du champ de saisie son métier ( vraiment super bien désigné et ENCORE MIEUX SUR MOBILE VRAIMENT SUPER BIEN FAIT À LA FOIS SUR PC ET SUR MOBILE MÊME SI ON DOIT FAIRE DEUX PAGES DIFFÉRENTES : UNE PC ET UNE MOBILE  POUR QUE LE MOBILE SOIT VRAIMENT PARFAIT ET PURE ET NON OBLIGÉ DE SE CONFORMER À CELUI DE LA VERSION PC), il sélectionne le poste et c'est là que le vrai travail commence
+
+Une fois le poste sélectionné , un travail vraiment analytique s'en suit qui va mêler IA (Api de llm ) et statistiques avec graphiques.
+
+Je m'explique :
+
+Dans un premier temps il faudra reconnaître le métier en question, et c'est là que le premier llm intervient à qui l'on va fournir l'entrée de l'utilisateur ou ce qui a été sélectionné (dans la mesure où il a trouvé ce qu'il voulait dans les champs de saisie) , il va recuper tous les métiers dans la base de données de métiers qu'on aura qui correspondent à cette sélection : celà est du au fait que deux metier peuvent être similaires mais porter juste des noms différents en fait, comme par exemple  "software engineer" et "ingénieur logiciel" et "développeur de logiciel" ou "java software engineer" ( et au lieu de se servir d'une liste de noms similaires je pense e qu'il serait mieux de se servir d'une Api de LLM car un LLM a une bien meilleure compréhension sémantique , à condition que sa mémoire de contexte soit asseée large pour qu'il puisse retenir une liste de plus de 700 métiers ( la liste sera affinée avant de lui être transmise bien-sûr vu qu'on supprimera les doublons ))
+
+Le LLM récupère l'entrée de l'utilisateur, puis renvoie à notre code une liste des métiers au quel celà correspond (portant exactement les noms comme dans notre BD), par exemple , il peut retourner une liste qui contient [java software engineer, ingénieur logiciel, software développer], par exemple et ça c'était la première étape il s'agit de "l'extraction du métier de l'utilisateur" en langage naturel , celà va permettre d'agréger les métiers identiques dans la statistique.
+
+Maintenant la seconde étape et la meilleure.
+
+Une fois qu'on a les noms de métiers exactes correspondants à la basse de données.
+
+On procéde à une étude statistique, Où l'on va afficher à l'utilisateur déjà un bref résumé statistique.. histoire qu'il se fasse une idée , par exemple la moyenne, les quartiles (mais comme tout le monde ne connais pas la signification on explique clairement ce que ça peut dire ) un écart type , le Max , le Minimum..., salaire du plus expérimenté, salaire maximum du moins expérimentés, et c'est tout ( prévoir les cas où l'on a trop peu d'éléments) et tout ça vraiment très bien fait épuré et pro.
+
+Tu vois qu'il y a vraiment un gros modules des calculs interressants à faire.
+
+(À noter que on rappelle que notre plateforme fait confiance à la communauté et que tous les salaires ici ne sont qu'une estimation vu qu'on ne peut pas vérifier exactement les salaires que certaines disent avoir mais ça c'est en bas de page )
+
+Ensuite on lui affiche plus bas un graphique clair de distribution statistique des salaires dans ce métier , avec "plus de détails" si il veut voir plus de graphiques avec même des stats de avec ou sans télétravail, la distribution avec des couleurs en fonction du nombre d'années d'XP (super important les années d'expérience).
+
+Un résumé clair fait avec l'intelligence artificielle, qui aura les résultats des stats l'IA va formater tout cela en langage naturel ( je ne sais pas comment ce sera organisé mais il faudra bien faire ça niveau UX surtout sur Smartphone en fait et ça doit toujours être pure avec de bons éléments extensibles , collapsibles).
+Peut-être qu'il va se mettre en bas et tout ... Breff on verra.
+
+Plus bas encore un magnifique tableau qui présente maintenant clairement comme dans salaires.dev une liste de poste avec tous les détails et les salaires qui correspondent au poste qu'il a mis
+
+Tu vois l'idée j'en suis certain.
+
+Au début j'avais dis qu'il y aurait un champ de recherche et un champ de saisie, là on a parlé du champ de recherche et maintenant parlons du champ de saisie.
+
+Le champ de saisie va permettre à l'utilisateur plutôt de décrire son métier en language naturel (dire ce qu'il fait au cas où il ne connais pas lui même le nom ou si c'est un novice ) puis valider le champ grâce à L'IA va lui faire des propositions ou la proposition correspondante avec niveau de certitude en pourcentage (moins il y a de doute mieux c'est et moins il y a de propositions mieux c'est ) qu'il va sélectionner une si c'est bien celà ou la plus sûre et on va simplement faire la même opération et afficher les résultats.
+Je pense que tu vois l'utilité du champ de saisie c'est vraiment très high tech et ça exploite vraiment le language naturel.
+
+Il y a aussi une partie de la plateforme qui s'appelle simplement : "TROUVER QUEL MÉTIER JE PEUX FAIRE"  où l'on s'aisi ce que l'on sait faire, les technos qu'on maîtrises, les études qu'on a faites..etc et ça nous dis à quel pourcentage on est compatible pour tel ou tel métier ... Maximum 3 propositions avec affichage des potentiels manquements et du salaire moyen de l'individu... Ça c'est vraiment une autre fonctionnalité un autre pan de la plateforme
+
+La plateforme exploite au mieux le local storage et peux permettre d'exporter des résultats au format PDF. Et pour la seconde fonction elle peut proposer des trucs à apprendre ou des roadmap à suivre
+
+Et pour maintenant parler de la dernière utilité de la plateforme, étant donné qu'il prendra surtout dans un premier temps des salaires en France de salaires.dev car ceux du Cameroun sont trop instables (on justifiera sur la plateforme que la commu grandi et qu'on va avoir plus de salaires du Cameroun et pour le coup on rajoutera un lien "Cameroun" où l'on verra une liste des salaires de camerounais ajoutés ( ça c'est un peu spécial )) 
+On aura donc une dernière option qui est AJOUTER MON SALAIRE on l'on Saisie son poste et tout ce qu'il faut avec une bonne gestion des champs optionnels et tout et ça enregistre donc les recherches vont combiner en fait les résultats de salaires.dev et ceux de supabase.
+Je préviens aussi que je n'ai jamais utilisé supabase de ma vie et je ne sais même pas comment ça marche , tout ce que je sais c'est que c'est gratuit et ça me dispense de backend.
+
+Voilà tu connais les specs de ma plateforme ultra spfistiquee et vraiment super bonne.
+
+Je pense qu'on peut partir sur du react+vite avec du tailwind et si nécessaire même des libraires de composants comme chadcn UI carrément si nécessaire.
+Pour un rendu vraiment beau , moderne , épurée digne des grands comme apple et google carrément ce doit respirer le bon , avec des chargements.. des lotties ( je vais en trouver de bons lotties) ..etc.
+
+Mais comme j'ai dis on veut un projet vraiment exceptionnel et quoi de mieux qu'un front end qui déchire en fait , en minimisant les cliques , en organisant super bien les donnes et avec des effets vraiment très beaux et pures.
+
+Du blanc et du noir pour ce chef d'œuvre et bien-sûr on peut surligner des trucs en bleu ou en vert ou en jaune ou en rouge , bref bien organiser mais la charte globale c'est du blanc et du noir et vraiment smooth. Sachant qu'il n'y a pas beaucoup d'images dans le site (et quand c'est le cas surtout des png au fond transparent) et des lotties en fait (on veut du beau et pure).
+
+Bien-sûr on lui prévoir un logo superbe laisser l'espace pour , et évidemment il y aura aussi mon logo à moi "Fox" pour le petit "by Fox" au centre.
+
+Fonctionnalité importante dans le résumé statistique , il faut fournir un aperçu en fonction des années d'expériences aussi en fait 
+
+Breff on fera un truc superbe et il nous faut déjà l'ossature.
+
+je rappelle le site qui a l'api : salaires.dev.
+
+je rapelles l'enpoint de l'api :https://salaires.dev/api/salaries
+
+un exemple de sortie de cet endpoint que tu comprennes bien :
+[
+{
+"company": "ChapsVision",
+"title": "Devops engineer",
+"location": "Paris",
+"compensation": 75000,
+"date": "2025-10-05T00:00:00.000Z",
+"level": null,
+"company_xp": null,
+"total_xp": 4,
+"remote": {
+"variant": "partial",
+"dayCount": 3,
+"base": "week",
+"location": "remote"
+}
+},
+{
+"company": "Sofy",
+"title": "Développeur Fullstack",
+"location": "Guadeloupe",
+"compensation": 30000,
+"date": "2025-09-25T00:00:00.000Z",
+"level": "Junior",
+"company_xp": null,
+"total_xp": 3,
+"remote": {
+"variant": "none"
+}
+},
+{
+"company": "Thales",
+"title": "Devops",
+"location": "Rungis",
+"compensation": 55000,
+"date": "2025-09-19T00:00:00.000Z",
+"level": "Mid",
+"company_xp": 1,
+"total_xp": 5,
+"remote": {
+"variant": "partial",
+"dayCount": 10,
+"base": "month",
+"location": "remote"
+}
+},
+{
+"company": "PME qui fait un Saas",
+"title": "Lead dev",
+"location": "Nantes",
+"compensation": 65000,
+"date": "2025-09-01T00:00:00.000Z",
+"level": "Senior",
+"company_xp": 2,
+"total_xp": 13,
+"remote": {
+"variant": "partial",
+"dayCount": 2,
+"base": "week",
+"location": "remote"
+}
+},
+{
+"company": "Gandi",
+"title": "Développeur Fullstack",
+"location": "Paris",
+"compensation": 60000,
+"date": "2025-08-21T00:00:00.000Z",
+"level": "Mid",
+"company_xp": 3,
+"total_xp": 15,
+"remote": {
+"variant": "partial",
+"dayCount": 2,
+"base": "week",
+"location": "remote"
+}
+},
+{
+"company": "Capgemini",
+"title": "Ingénieur logiciel et données",
+"location": "Toulouse",
+"compensation": 36000,
+"date": "2025-08-14T00:00:00.000Z",
+"level": "Junior",
+"company_xp": 2,
+"total_xp": 3,
+"remote": {
+"variant": "partial",
+"dayCount": 3,
+"base": "week",
+"location": "remote"
+}
+},
+{
+"company": "Ministère de l'Économie et des Finances",
+"title": "Développeur front-end",
+"location": "Paris",
+"compensation": 55000,
+"date": "2025-08-09T00:00:00.000Z",
+"level": "Mid",
+"company_xp": null,
+"total_xp": 5,
+"remote": {
+"variant": "partial",
+"dayCount": 2,
+"base": "week",
+"location": "remote"
+}
+},
+{
+"company": "BPCE-SI",
+"title": "Mobile Developer",
+"location": "Toulouse",
+"compensation": 47000,
+"date": "2025-08-01T00:00:00.000Z",
+"level": "Junior",
+"company_xp": null,
+"total_xp": null,
+"remote": {
+"variant": "partial",
+"dayCount": 3,
+"base": "week",
+"location": "remote"
+}
+},
+
+"company": "OVHcloud",
+"title": null,
+"location": "Toulouse",
+"compensation": 39000,
+"date": "2022-07-05T00:00:00.000Z",
+"level": null,
+"company_xp": 1,
+"total_xp": 2,
+"remote": null
+},
+{
+"company": "Pôle Emploi DSI",
+"title": null,
+"location": "Nantes",
+"compensation": 37000,
+"date": "2022-07-05T00:00:00.000Z",
+"level": null,
+"company_xp": 6,
+"total_xp": 6,
+"remote": null
+},
+{
+"company": "PME",
+"title": null,
+"location": "Bretagne",
+"compensation": 47000,
+"date": "2022-07-05T00:00:00.000Z",
+"level": null,
+"company_xp": 3,
+"total_xp": 8,
+"remote": null
+},
+{
+"company": "Decathlon",
+"title": null,
+"location": "Nantes",
+"compensation": 58000,
+"date": "2022-07-05T00:00:00.000Z",
+"level": null,
+"company_xp": 1,
+"total_xp": 9,
+"remote": null
+}, ...etc
+
+et comme tu peux le voir il peut y avoir des trucs qui manquent
+
+
+note aussi que je dis personnes dans la tech mais c'est principalement pour des dev (il faudras l'indiquer sur la plateforme) car c'est avec le temps que d'autres types de salariers viendront s'ajouter.
+
+
+## 1) Contexte court (ce que je veux)
+
+Moi, **Fox** — je veux construire **OpenPay**, une UI front-only (React + Vite / NextJS) hébergée sur Vercel, qui utilise l’API publique `https://salaires.dev/api/salaries` + une base Supabase optionnelle pour stocker les salaires fournis par la communauté.
+But : rendre les données de salaires **beaux**, **exploitables**, **intelligents** (IA + stats uniquement après validation de la saisie ou sélection), **ultra UX** (desktop + mobile séparés si besoin), et **open-source**.
+
+---
+
+## 2) Objectifs fonctionnels (high-level)
+
+- Page d’accueil épurée (noir/blanc, accents colorés) avec **champ de recherche central** qui bascule en **champ de saisie libre**.
+- Recherche par poste (autosuggest local) → sélection du poste → **analyse statistique + visualisations + résumé IA**.
+- Champ de saisie libre : l’utilisateur décrit son activité en langage naturel → LLM (Gemini via Node.js `@google/genai`) propose les métiers correspondants avec score de confiance → l’utilisateur confirme → stats affichées.
+- Module **“TROUVER QUEL MÉTIER JE PEUX FAIRE”** : l’utilisateur entre ses technos/études → on renvoie 0–3 métiers compatibles + score de fit + manques + salaire moyen.
+- Page / section **Ajouter mon salaire** : formulaire (champ obligatoires + optionnels) -> enregistrement dans Supabase (si activé) + fusion/synchronisation locale avec les données salaires.dev ET AVEC LE PAYS CONCERNE , CAR CEUX DE SALAIRES.DEV SONT JUSTE FRANCAIS.
+- Export PDF des résultats et stockage local (localStorage).
+- UX : animations Lottie, loaders élégants, responsive mobile-first (mobile éventuellement séparé pour perfection).
+- Indiquer clairement qu’on cible **principalement les devs / métiers tech**.
+
+---
+
+## 3) Données & API
+
+- Source principale : `https://salaires.dev/api/salaries` (récupère tout en un seul endpoint).
+- Format attendu (extrait représentatif) :
+
+```json
+{
+  "company": "ChapsVision",
+  "title": "Devops engineer",
+  "location": "Paris",
+  "compensation": 75000,
+  "date": "2025-10-05T00:00:00.000Z",
+  "level": null,
+  "company_xp": null,
+  "total_xp": 4,
+  "remote": {
+    "variant": "partial",
+    "dayCount": 3,
+    "base": "week",
+    "location": "remote"
+  }
+}
+```
+
+- Données manquantes possibles (`title=null`, `total_xp=null`, `remote=null`) → prévoir nettoyage / filtrage / imputations simples.
+- Supabase : stocke nouvelles soumissions d’utilisateurs ; reads combinés (salaires.dev + Supabase) pour résultats.
+
+---
+
+## 4) Rôle du LLM — tâches précises à déléguer
+
+1. **Normalization / Mapping métier (après validation)**
+
+   - Entrée : la saisie utilisateur ou la sélection d’autosuggest.
+   - But : retourner la liste des titres EXACTS présents dans notre DB et score de correspondance.
+   - Contraintes : variantes FR/EN, pluriels, sigles, modificateurs (Senior, Lead, Jr), accents.
+
+2. **Classification & regroupement**
+
+   - Détecter métiers très proches pour agréger stats.
+
+3. **Résumé naturel des stats**
+
+   - Entrée : résultats statistiques (moyenne, médiane, quartiles, écart-type, min, max, counts, distribution par années d’XP, remote vs on-site).
+   - Sortie : texte clair, court, explicatif, adapté mobile (3–5 phrases + version longue collapsible).
+
+4. **Proposition métiers (TROUVER QUEL MÉTIER JE PEUX FAIRE)**
+
+   - Entrée : liste de skills/technos/études.
+   - Sortie : top 3 métiers + score de compatibilité (%) + principaux manques + salaire moyen estimé.
+
+5. **Gestion d’ambiguïtés**
+
+   - Si incertitude forte, renvoyer plusieurs propositions triées par confiance (avec %).
+
+**Note technique LLM** : liste de ~700 métiers fournie pré-nettoyée pour mapping, duplication gérée côté pré-process.
+
+---
+
+## 5) Calculs / Stats à afficher
+
+Pour un poste sélectionné (après mapping) :
+
+- Nombre d’entrées (`n`)
+- Moyenne (µ) — salaire moyen
+- Médiane + Q1 / Q3 (quartiles) — avec explication simple
+- Écart-type (σ) — explication courte
+- Min / Max
+- Salaire moyen par **tranches d’expérience** (0–2, 3–5, 6–10, 10+)
+- Distribution par **remote variant** (none / partial / full)
+- Histogramme / boxplot / courbe de densité + possibilité “voir plus de graphiques”
+- Cas limites : si `n < 5`, afficher “données insuffisantes” et limiter certains calculs.
+
+---
+
+## 6) UI / UX et Design notes
+
+- Charte : **noir & blanc**, accents surlignage (bleu/vert/jaune/rouge).
+- Homepage : champ de recherche central large + micro-animations.
+- Autosuggest : suggestions instantanées, mobile optimisé (mobile prioritaire).
+- Résultats : résumé statistique compact → graphique → résumé IA collapsible → tableau détaillé.
+- Tableau : colonnes filtrables/sortables (company, location, compensation, total_xp, level, remote).
+- Export : bouton “Exporter PDF”.
+- Logo : espace pour OpenPay + “by Fox”.
+- Loader / Lottie : transitions douces, priorité perf mobile.
+
+---
+
+## 7) Architecture & stack (préférences)
+
+- **Frontend** : React + Vite (ou NextJS si SSR)
+- **CSS** : TailwindCSS (dernière version Vite) — shadcn UI optionnel
+- **DB** : Supabase (optionnel)
+- **Hosting** : Vercel
+- **LLM** : Gemini Node.js (`@google/genai`) pour mapping, résumé, recommandations
+- **Visualisation** : Recharts / chart.js (performance mobile prioritaire)
+- **State** : minimal, réactif, cache localStorage pour fetch unique
+- **CI / Repo** : repo propre, MIT, guide contribution
+
+---
+
+## 8) SUGGESTION Structure initiale du projet
+
+```
+/src
+  /components
+  /pages
+  /models
+  /services
+  /utils
+  /assets (lotties, logos)
+```
+
+---
+
+## 9) Workflows & priorités
+
+**MVP :**
+
+1. Scaffold + Tailwind + fichiers vides
+2. Fetch `https://salaires.dev/api/salaries` (cache)
+3. Search autosuggest local (titles nettoyés)
+4. Sélection poste → stats ,histogramme
+5. Export PDF
+6. UI mobile + desktop variantes
+
+- Intégration LLM pour mapping + résumé
+- Champ de saisie en langage naturel
+- Module “TROUVER QUEL MÉTIER JE PEUX FAIRE”
+- Supabase CRUD des salaires
+- Graphiques avancés, filtres par remote / XP / ville
+
+---
+
+## 10) Contraintes & notes importantes
+
+- Disclaimer clair : **salaires auto-déclarés**
+- Nettoyage / filtrage compensation / XP / remote
+- Confidentialité : aucune donnée perso publiable sans consentement
+- API retourne tout en un fetch
+- Mobile : interactions simples, texte lisible, “voir plus” pour détails
