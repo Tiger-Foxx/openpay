@@ -357,6 +357,12 @@ export async function generateStatsSummary(
   }
 
   try {
+    // Préparer la liste complète des roadmaps disponibles
+    const availableRoadmaps = {
+      roles: config.roadmaps.roles.map((r) => `${r.name} → ${r.url}`).join("\n"),
+      skills: config.roadmaps.skills.map((s) => `${s.name} → ${s.url}`).join("\n"),
+    };
+
     // Préparer le contexte des titres
     const titlesContext =
       jobTitles && jobTitles.length > 0
@@ -421,9 +427,20 @@ ${
 ✅ EXEMPLE (ton attendu) :
 "Pour DevOps, Devops Engineer ou Ingénieur DevOps, le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud ! Plus bas, des roadmaps de formation vous attendent pour progresser."
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🗺️ ROADMAPS DISPONIBLES (roadmap.sh) - LISTE COMPLÈTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 ROADMAPS PAR RÔLE :
+${availableRoadmaps.roles}
+
+🔧 ROADMAPS PAR COMPÉTENCE :
+${availableRoadmaps.skills}
+
 ⚠️ IMPORTANT : 
 • Utilise "OU" entre les postes (DevOps, Devops OU Ingénieur DevOps), JAMAIS "ET" !
 • Termine TOUJOURS par une phrase mentionnant les roadmaps disponibles plus bas (variantes possibles : "Des roadmaps de formation sont disponibles ci-dessous", "Plus bas, retrouvez des parcours de formation", "Consultez les roadmaps recommandées en dessous")
+• Tu as maintenant accès à TOUTES les roadmaps roadmap.sh disponibles ci-dessus - utilise-les pour donner des conseils spécifiques !
 
 Réponds UNIQUEMENT avec le texte du résumé :`;
 
@@ -533,11 +550,11 @@ export async function matchJobsBySkills(
   }
 
   try {
-    // Préparer la liste des roadmaps disponibles
-    const availableRoadmaps = [
-      ...config.roadmaps.roles.map((r) => `${r.name} (${r.url})`),
-      ...config.roadmaps.skills.map((s) => `${s.name} (${s.url})`),
-    ].join("\n");
+    // Préparer la liste complète des roadmaps disponibles organisée par catégories
+    const availableRoadmaps = {
+      roles: config.roadmaps.roles.map((r) => `  • ${r.name} → ${r.url}`).join("\n"),
+      skills: config.roadmaps.skills.map((s) => `  • ${s.name} → ${s.url}`).join("\n"),
+    };
 
     const prompt = `Tu es FOX, conseiller en orientation de carrière tech de niveau expert avec 15 ans d'expérience. Tu as accompagné des centaines de développeurs dans leur transition professionnelle. Tu connais parfaitement l'écosystème tech, les compétences recherchées, et les parcours d'apprentissage optimaux.
 
@@ -556,9 +573,14 @@ ${
 }
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🗺️ ROADMAPS DISPONIBLES (roadmap.sh)
+🗺️ ROADMAPS DISPONIBLES (roadmap.sh) - LISTE COMPLÈTE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${availableRoadmaps}
+
+📚 ROADMAPS PAR RÔLE / MÉTIER :
+${availableRoadmaps.roles}
+
+🔧 ROADMAPS PAR COMPÉTENCE / TECHNOLOGIE :
+${availableRoadmaps.skills}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 TA MISSION DÉTAILLÉE
@@ -651,11 +673,11 @@ export async function recommendRoadmapsForJob(
   }
 
   try {
-    // Préparer la liste des roadmaps disponibles
-    const availableRoadmaps = [
-      ...config.roadmaps.roles.map((r) => `${r.name} (${r.url})`),
-      ...config.roadmaps.skills.map((s) => `${s.name} (${s.url})`),
-    ].join("\n");
+    // Préparer la liste complète des roadmaps disponibles organisée par catégories
+    const availableRoadmaps = {
+      roles: config.roadmaps.roles.map((r) => `  • ${r.name} → ${r.url}`).join("\n"),
+      skills: config.roadmaps.skills.map((s) => `  • ${s.name} → ${s.url}`).join("\n"),
+    };
 
     const jobTitlesText =
       jobTitles.length === 1 ? jobTitles[0] : jobTitles.slice(0, 3).join(", ");
@@ -663,9 +685,14 @@ export async function recommendRoadmapsForJob(
     const prompt = `Tu es FOX, expert en orientation de carrière tech. Recommande 3 à 5 roadmaps roadmap.sh pertinentes pour quelqu'un qui vise le(s) métier(s) suivant(s) : ${jobTitlesText}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🗺️ ROADMAPS DISPONIBLES (roadmap.sh)
+🗺️ ROADMAPS DISPONIBLES (roadmap.sh) - LISTE COMPLÈTE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${availableRoadmaps}
+
+📚 ROADMAPS PAR RÔLE / MÉTIER :
+${availableRoadmaps.roles}
+
+🔧 ROADMAPS PAR COMPÉTENCE / TECHNOLOGIE :
+${availableRoadmaps.skills}
 
 🎯 TA MISSION :
 1. Identifier les roadmaps les PLUS pertinentes pour ce(s) métier(s)

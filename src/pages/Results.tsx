@@ -150,7 +150,7 @@ export const Results = React.memo(() => {
     <div className="space-y-8 pb-12">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
+        <div className="mt-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-black mb-2">
             {jobQuery}
           </h1>
