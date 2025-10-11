@@ -19,6 +19,14 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    proxy: {
+      "/api/salaries": {
+        target: "https://salaires.dev",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/salaries/, "/api/salaries"),
+        secure: false,
+      },
+    },
   },
   build: {
     outDir: "dist",

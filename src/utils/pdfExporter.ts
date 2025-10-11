@@ -7,7 +7,7 @@ import { formatSalary, formatDate, formatRemote } from "./dataFormatter";
 /**
  * Exporte les résultats d'analyse en PDF
  */
-export function exportResultsToPDF(
+export function exportToPDF(
   jobTitle: string,
   stats: SalaryStatistics,
   salaries: CleanedSalary[]

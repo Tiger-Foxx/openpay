@@ -20,15 +20,84 @@ let genAI: GoogleGenerativeAI | null = null;
  */
 function getGenAI(): GoogleGenerativeAI {
   if (!config.llm.apiKey) {
+    console.error("[LLM] ❌ ERREUR: Clé API Gemini manquante!");
+    console.error(
+      "[LLM] 💡 Assure-toi que VITE_GEMINI_API_KEY est dans ton .env"
+    );
     throw new Error("Clé API Gemini manquante dans la configuration");
   }
 
   if (!genAI) {
     genAI = new GoogleGenerativeAI(config.llm.apiKey);
-    console.log("[LLM] Client Gemini initialisé");
+    console.log("[LLM] ✅ Client Gemini initialisé");
+    console.log(
+      "[LLM] 🔑 Clé API (premiers 10 chars):",
+      config.llm.apiKey.substring(0, 10) + "..."
+    );
+    console.log("[LLM] 🤖 Modèle utilisé:", config.llm.model);
   }
 
   return genAI;
+}
+
+/**
+ * Parse le JSON depuis une réponse LLM (robuste)
+ */
+function parseJSONFromLLM(response: string): Record<string, unknown> {
+  console.log("[LLM] 🔍 Début parsing JSON...");
+
+  let cleaned = response.trim();
+
+  if (!cleaned) {
+    console.error("[LLM] ❌ Réponse vide pour le parsing");
+    throw new Error("Réponse vide");
+  }
+
+  // Enlever les markdown code blocks
+  cleaned = cleaned.replace(/```json\s*/gi, "").replace(/```\s*/g, "");
+
+  // Enlever tout texte avant le premier {
+  const startIndex = cleaned.indexOf("{");
+  if (startIndex === -1) {
+    console.error(
+      "[LLM] ❌ Aucun JSON trouvé dans la réponse:",
+      cleaned.substring(0, 300)
+    );
+    throw new Error("Aucun JSON trouvé");
+  }
+
+  if (startIndex > 0) {
+    console.log(
+      "[LLM] 🧹 Texte avant JSON supprimé:",
+      cleaned.substring(0, startIndex)
+    );
+    cleaned = cleaned.substring(startIndex);
+  }
+
+  // Enlever tout texte après le dernier }
+  const endIndex = cleaned.lastIndexOf("}");
+  if (endIndex === -1) {
+    console.error("[LLM] ❌ Pas de fermeture } trouvée");
+    throw new Error("JSON incomplet");
+  }
+
+  if (endIndex < cleaned.length - 1) {
+    console.log(
+      "[LLM] 🧹 Texte après JSON supprimé:",
+      cleaned.substring(endIndex + 1)
+    );
+    cleaned = cleaned.substring(0, endIndex + 1);
+  }
+
+  console.log(
+    "[LLM] 📄 JSON nettoyé (premiers 300 chars):",
+    cleaned.substring(0, 300)
+  );
+
+  const parsed = JSON.parse(cleaned);
+  console.log("[LLM] ✅ JSON parsé avec succès:", Object.keys(parsed));
+
+  return parsed;
 }
 
 /**
@@ -38,6 +107,11 @@ async function callLLM(prompt: string): Promise<string> {
   try {
     const ai = getGenAI();
     const model = ai.getGenerativeModel({ model: config.llm.model });
+
+    console.log(
+      "[LLM] 📤 Envoi prompt (premiers 200 chars):",
+      prompt.substring(0, 200)
+    );
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -49,6 +123,21 @@ async function callLLM(prompt: string): Promise<string> {
 
     const response = result.response;
     const text = response.text();
+
+    console.log(
+      "[LLM] 📥 Réponse brute (premiers 500 chars):",
+      text.substring(0, 500)
+    );
+    console.log(
+      "[LLM] 📏 Longueur totale de la réponse:",
+      text.length,
+      "caractères"
+    );
+
+    if (!text || text.trim().length === 0) {
+      console.error("[LLM] ⚠️ Réponse vide du LLM!");
+      throw new Error("Réponse vide du LLM");
+    }
 
     return text;
   } catch (error) {
@@ -79,8 +168,19 @@ export async function mapJobTitlesToDatabase(
   }
 
   try {
-    // Limiter la liste pour ne pas dépasser le contexte
-    const limitedTitles = allTitles.slice(0, 500); // Premiers 500 titres
+    console.log("[LLM] 🔍 mapJobTitlesToDatabase - Input:", userInput);
+    console.log("[LLM] 📊 Nombre de titres disponibles:", allTitles.length);
+
+    // ⚠️ LIMITE: Réduire à 150 titres pour éviter de dépasser le contexte Gemini
+    const limitedTitles = allTitles.slice(0, 150);
+    console.log("[LLM] 📋 Titres limités à:", limitedTitles.length);
+    if (allTitles.length > 150) {
+      console.warn(
+        `[LLM] ⚠️ ${
+          allTitles.length - 150
+        } titres ignorés pour rester sous la limite de tokens`
+      );
+    }
 
     const prompt = `Tu es FOX, expert senior en classification de métiers tech avec 15 ans d'expérience dans l'analyse salariale et l'orientation de carrière. Tu maîtrises parfaitement les nuances entre métiers similaires, les évolutions de titres dans l'industrie, et les équivalences internationales.
 
@@ -119,15 +219,23 @@ ${limitedTitles.map((title, idx) => `${idx + 1}. ${title}`).join("\n")}
 
     const response = await callLLM(prompt);
 
-    // Parse la réponse JSON
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.warn("[LLM] Impossible de parser la réponse JSON");
-      return [];
+    try {
+      const parsed = parseJSONFromLLM(response);
+      const matches = (parsed.matches as string[]) || [];
+      console.log("[LLM] ✅ Matches trouvés:", matches.length, "titres");
+      return matches;
+    } catch (parseError) {
+      console.error("[LLM] ❌ Erreur parsing JSON:", parseError);
+      console.error("[LLM] 📄 Réponse complète:", response);
+      // Fallback: recherche simple
+      console.log("[LLM] 🔄 Fallback: recherche locale simple");
+      const normalized = userInput.toLowerCase();
+      const fallbackResults = allTitles
+        .filter((title) => title.toLowerCase().includes(normalized))
+        .slice(0, 10);
+      console.log("[LLM] 🔄 Fallback résultats:", fallbackResults.length);
+      return fallbackResults;
     }
-
-    const parsed = JSON.parse(jsonMatch[0]);
-    return parsed.matches || [];
   } catch (error) {
     console.error("[LLM] Erreur mapJobTitlesToDatabase:", error);
     // Fallback sur recherche simple
@@ -265,13 +373,13 @@ Description utilisateur : "${description}"
 
     const response = await callLLM(prompt);
 
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
+    try {
+      const parsed = parseJSONFromLLM(response);
+      return (parsed.suggestions as JobSuggestion[]) || [];
+    } catch (parseError) {
+      console.error("[LLM] Erreur parseNaturalLanguageJob:", parseError);
       return [];
     }
-
-    const parsed = JSON.parse(jsonMatch[0]);
-    return parsed.suggestions || [];
   } catch (error) {
     console.error("[LLM] Erreur parseNaturalLanguageJob:", error);
     return [];
@@ -371,23 +479,25 @@ ${availableRoadmaps}
 
     const response = await callLLM(prompt);
 
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
+    try {
+      const parsed = parseJSONFromLLM(response);
+
+      // Valider et enrichir les résultats
+      return ((parsed.matches as JobMatchResult[]) || []).map(
+        (match: JobMatchResult) => ({
+          jobTitle: match.jobTitle || "Métier inconnu",
+          compatibilityScore: match.compatibilityScore || 0,
+          averageSalary: 0, // Sera calculé par jobMatcher.ts
+          matchedSkills: match.matchedSkills || [],
+          missingSkills: match.missingSkills || [],
+          recommendedRoadmaps: match.recommendedRoadmaps || [],
+          reasoning: match.reasoning || "",
+        })
+      );
+    } catch (parseError) {
+      console.error("[LLM] Erreur matchJobsBySkills:", parseError);
       return [];
     }
-
-    const parsed = JSON.parse(jsonMatch[0]);
-
-    // Valider et enrichir les résultats
-    return (parsed.matches || []).map((match: JobMatchResult) => ({
-      jobTitle: match.jobTitle || "Métier inconnu",
-      compatibilityScore: match.compatibilityScore || 0,
-      averageSalary: 0, // Sera calculé par jobMatcher.ts
-      matchedSkills: match.matchedSkills || [],
-      missingSkills: match.missingSkills || [],
-      recommendedRoadmaps: match.recommendedRoadmaps || [],
-      reasoning: match.reasoning || "",
-    }));
   } catch (error) {
     console.error("[LLM] Erreur matchJobsBySkills:", error);
     return [];

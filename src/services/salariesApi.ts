@@ -1,5 +1,6 @@
 // src/services/salariesApi.ts
 
+import axios from "axios";
 import { Salary, CleanedSalary, SalaryFilter } from "@/models/salary";
 import {
   cleanSalaries,
@@ -12,9 +13,14 @@ import { config } from "@/config";
 /**
  * Service pour interagir avec l'API salaires.dev
  * Gère le cache, les erreurs, et la fusion avec Supabase
+ * Utilise AXIOS avec proxy Vite pour éviter CORS
  */
 
-const API_ENDPOINT = config.salariesApi.endpoint;
+// En dev: utilise le proxy Vite (/api/salaries -> https://salaires.dev/api/salaries)
+// En prod: utilise l'URL complète
+const API_ENDPOINT = import.meta.env.DEV
+  ? "/api/salaries"
+  : config.salariesApi.endpoint;
 const CACHE_KEY = "salaries_data";
 const TITLES_CACHE_KEY = "unique_titles";
 
@@ -31,13 +37,14 @@ export async function fetchAllSalaries(): Promise<CleanedSalary[]> {
 
   try {
     console.log("[SalariesAPI] Fetch depuis salaires.dev...");
-    const response = await fetch(API_ENDPOINT);
+    const response = await axios.get<Salary[]>(API_ENDPOINT, {
+      timeout: 15000, // 15 secondes
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const rawData: Salary[] = await response.json();
+    const rawData: Salary[] = response.data;
 
     // Nettoyage et validation avec nos utils
     const cleaned = cleanSalaries(rawData);
