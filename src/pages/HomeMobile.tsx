@@ -90,7 +90,7 @@ export const HomeMobile = React.memo(() => {
           >
             <button
               onClick={() => navigate("/find-my-job")}
-              className="group w-full px-6 py-4 bg-white border-2 border-gray-300 rounded-2xl font-semibold hover:border-black hover:shadow-medium transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
+              className="group w-full px-6 py-2 bg-white border-2 border-gray-300 rounded-2xl font-semibold hover:border-black hover:shadow-medium transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
               <div className="flex items-center gap-3 relative z-10">
@@ -102,7 +102,7 @@ export const HomeMobile = React.memo(() => {
 
             <button
               onClick={() => navigate("/add-salary")}
-              className="group w-full px-6 py-4 bg-black text-white rounded-2xl font-semibold hover:bg-gray-900 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
+              className="group w-full px-6 py-2 bg-black text-white rounded-2xl font-semibold hover:bg-gray-900 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
               <div className="flex items-center gap-3 relative z-10">
@@ -114,7 +114,7 @@ export const HomeMobile = React.memo(() => {
 
             <button
               onClick={() => navigate("/cameroon")}
-              className="group w-full px-5 py-3 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl font-medium hover:from-green-100 hover:to-emerald-100 active:bg-green-100 transition-all duration-200 flex items-center justify-between"
+              className="group w-full px-5 py-2 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl font-medium hover:from-green-100 hover:to-emerald-100 active:bg-green-100 transition-all duration-200 flex items-center justify-between"
             >
               <span className="text-sm">Salaires Cameroun 🇨🇲</span>
               <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />

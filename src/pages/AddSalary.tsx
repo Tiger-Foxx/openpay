@@ -1,14 +1,29 @@
 // src/pages/AddSalary.tsx
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@/components/UI/Button";
 import { Card } from "@/components/UI/Card";
 import { Salary } from "@/models/salary";
 import { addSalary } from "@/services/supabaseService";
 import { config } from "@/config";
-import { FileText } from "lucide-react";
+import { FileText, Building2, Briefcase, MapPin, Globe2, DollarSign, Award, Clock, Wifi } from "lucide-react";
 import Lottie from "lottie-react";
 import profileAnimation from "@/assets/lotties/Profile Avatar of Young Boy.json";
+
+// Types pour les pays
+type Country = {
+  code: string;
+  name: string;
+  flag: string;
+  currency: string;
+  currencySymbol: string;
+};
+
+const countries: Country[] = [
+  { code: "CM", name: "Cameroun", flag: "🇨🇲", currency: "FCFA", currencySymbol: "FCFA" },
+  { code: "FR", name: "France", flag: "🇫🇷", currency: "EUR", currencySymbol: "€" },
+  { code: "OTHER", name: "Autre", flag: "🌍", currency: "EUR", currencySymbol: "€" },
+];
 
 export const AddSalary = React.memo(() => {
   const [formData, setFormData] = useState<Partial<Salary>>({
@@ -26,6 +41,11 @@ export const AddSalary = React.memo(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Calculer la devise en fonction du pays sélectionné
+  const selectedCountry = useMemo(() => {
+    return countries.find(c => c.name === formData.country) || countries[0];
+  }, [formData.country]);
 
   const handleChange = (field: keyof Salary, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -150,8 +170,9 @@ export const AddSalary = React.memo(() => {
           <div>
             <label
               htmlFor="company"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Building2 className="h-4 w-4" />
               Entreprise <span className="text-red-500">*</span>
             </label>
             <input
@@ -160,7 +181,7 @@ export const AddSalary = React.memo(() => {
               value={formData.company || ""}
               onChange={(e) => handleChange("company", e.target.value)}
               placeholder="Ex: Google, Startup Tech..."
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all hover:border-gray-400"
               required
             />
           </div>
@@ -169,8 +190,9 @@ export const AddSalary = React.memo(() => {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Briefcase className="h-4 w-4" />
               Titre du Poste <span className="text-red-500">*</span>
             </label>
             <input
@@ -179,7 +201,7 @@ export const AddSalary = React.memo(() => {
               value={formData.title || ""}
               onChange={(e) => handleChange("title", e.target.value)}
               placeholder="Ex: Développeur Full Stack, DevOps Engineer..."
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all hover:border-gray-400"
               required
             />
           </div>
@@ -188,8 +210,9 @@ export const AddSalary = React.memo(() => {
           <div>
             <label
               htmlFor="location"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <MapPin className="h-4 w-4" />
               Localisation <span className="text-red-500">*</span>
             </label>
             <input
@@ -198,84 +221,121 @@ export const AddSalary = React.memo(() => {
               value={formData.location || ""}
               onChange={(e) => handleChange("location", e.target.value)}
               placeholder="Ex: Douala, Yaoundé, Paris..."
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all hover:border-gray-400"
               required
             />
           </div>
 
-          {/* Pays */}
+          {/* Pays - Version Modernisée */}
           <div>
             <label
               htmlFor="country"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Globe2 className="h-4 w-4" />
               Pays <span className="text-red-500">*</span>
             </label>
-            <select
-              id="country"
-              value={formData.country || "Cameroun"}
-              onChange={(e) => handleChange("country", e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
-            >
-              <option value="Cameroun">Cameroun</option>
-              <option value="France">France</option>
-              <option value="Autre">Autre</option>
-            </select>
+            <div className="relative">
+              <select
+                id="country"
+                value={formData.country || "Cameroun"}
+                onChange={(e) => handleChange("country", e.target.value)}
+                className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all appearance-none bg-white cursor-pointer hover:border-gray-400 text-base font-medium"
+                style={{ backgroundImage: 'none' }}
+              >
+                {countries.map((country) => (
+                  <option key={country.code} value={country.name}>
+                    {country.flag} {country.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-2xl">
+                {selectedCountry.flag}
+              </div>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              💡 La devise s'adaptera automatiquement selon votre sélection
+            </p>
           </div>
 
-          {/* Salaire */}
+          {/* Salaire - Avec devise dynamique */}
           <div>
             <label
               htmlFor="compensation"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
-              Salaire Annuel Brut (€) <span className="text-red-500">*</span>
+              <DollarSign className="h-4 w-4" />
+              Salaire Annuel Brut ({selectedCountry.currencySymbol}) <span className="text-red-500">*</span>
             </label>
-            <input
-              id="compensation"
-              type="number"
-              min="0"
-              value={formData.compensation || ""}
-              onChange={(e) =>
-                handleChange("compensation", parseInt(e.target.value))
-              }
-              placeholder="Ex: 45000"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
-              required
-            />
+            <div className="relative">
+              <input
+                id="compensation"
+                type="number"
+                min="0"
+                value={formData.compensation || ""}
+                onChange={(e) =>
+                  handleChange("compensation", parseInt(e.target.value))
+                }
+                placeholder={selectedCountry.code === "CM" ? "Ex: 12000000" : "Ex: 45000"}
+                className="w-full px-4 py-3 pr-20 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all text-lg font-semibold"
+                required
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-100 px-3 py-1 rounded-lg text-sm font-bold text-gray-700 border border-gray-300">
+                {selectedCountry.currencySymbol}
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {selectedCountry.code === "CM" 
+                ? "💼 Montant en Francs CFA (FCFA)" 
+                : "💼 Montant en Euros (€)"}
+            </p>
           </div>
 
           {/* Niveau */}
           <div>
             <label
               htmlFor="level"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Award className="h-4 w-4" />
               Niveau (optionnel)
             </label>
-            <select
-              id="level"
-              value={formData.level || ""}
-              onChange={(e) =>
-                handleChange("level", e.target.value || undefined)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
-            >
-              <option value="">-- Sélectionner --</option>
-              <option value="Junior">Junior</option>
-              <option value="Mid">Mid</option>
-              <option value="Senior">Senior</option>
-              <option value="Lead">Lead</option>
-              <option value="Principal">Principal</option>
-            </select>
+            <div className="relative">
+              <select
+                id="level"
+                value={formData.level || ""}
+                onChange={(e) =>
+                  handleChange("level", e.target.value || undefined)
+                }
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all appearance-none bg-white cursor-pointer hover:border-gray-400"
+              >
+                <option value="">-- Sélectionner --</option>
+                <option value="Junior">🌱 Junior</option>
+                <option value="Mid">💼 Mid</option>
+                <option value="Senior">🎯 Senior</option>
+                <option value="Lead">👑 Lead</option>
+                <option value="Principal">⭐ Principal</option>
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Expérience Entreprise */}
           <div>
             <label
               htmlFor="company_xp"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Clock className="h-4 w-4" />
               Années d'Expérience dans l'Entreprise (optionnel)
             </label>
             <input
@@ -290,7 +350,7 @@ export const AddSalary = React.memo(() => {
                 )
               }
               placeholder="Ex: 2"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all hover:border-gray-400"
             />
           </div>
 
@@ -298,8 +358,9 @@ export const AddSalary = React.memo(() => {
           <div>
             <label
               htmlFor="total_xp"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Clock className="h-4 w-4" />
               Années d'Expérience Totale (optionnel)
             </label>
             <input
@@ -314,7 +375,7 @@ export const AddSalary = React.memo(() => {
                 )
               }
               placeholder="Ex: 5"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all hover:border-gray-400"
             />
           </div>
 
@@ -322,30 +383,38 @@ export const AddSalary = React.memo(() => {
           <div>
             <label
               htmlFor="remote"
-              className="block text-sm font-semibold text-black mb-2"
+              className="block text-sm font-semibold text-black mb-2 flex items-center gap-2"
             >
+              <Wifi className="h-4 w-4" />
               Télétravail (optionnel)
             </label>
-            <select
-              id="remote"
-              value={formData.remote?.variant || ""}
-              onChange={(e) => {
-                const variant = e.target.value;
-                if (variant === "") {
-                  handleChange("remote", undefined);
-                } else {
-                  handleChange("remote", {
-                    variant: variant as "none" | "partial" | "full",
-                  });
-                }
-              }}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
-            >
-              <option value="">-- Sélectionner --</option>
-              <option value="none">Présentiel</option>
-              <option value="partial">Hybride</option>
-              <option value="full">100% Remote</option>
-            </select>
+            <div className="relative">
+              <select
+                id="remote"
+                value={formData.remote?.variant || ""}
+                onChange={(e) => {
+                  const variant = e.target.value;
+                  if (variant === "") {
+                    handleChange("remote", undefined);
+                  } else {
+                    handleChange("remote", {
+                      variant: variant as "none" | "partial" | "full",
+                    });
+                  }
+                }}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 transition-all appearance-none bg-white cursor-pointer hover:border-gray-400"
+              >
+                <option value="">-- Sélectionner --</option>
+                <option value="none">🏢 Présentiel</option>
+                <option value="partial">🔄 Hybride</option>
+                <option value="full">🏠 100% Remote</option>
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Error */}

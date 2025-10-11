@@ -41,7 +41,7 @@ export const Home = React.memo(() => {
             </div>
 
             {/* Right: Content */}
-            <div className="text-center lg:text-left space-y-8 animate-slide-up">
+            <div className="text-center lg:text-left space-y-4 animate-slide-up">
               {/* Logo + Titre */}
               <div className="space-y-4">
                 <div className="inline-block relative">
@@ -103,12 +103,12 @@ export const Home = React.memo(() => {
 
         {/* Quick Actions — Sous la recherche, z-index inférieur */}
         <div
-          className="mt-12 flex flex-wrap gap-4 justify-center relative z-0 animate-fade-in"
+          className="mt-8 flex flex-wrap gap-4 justify-center relative z-0 animate-fade-in"
           style={{ animationDelay: "400ms" }}
         >
           <button
             onClick={() => navigate("/find-my-job")}
-            className="group relative px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl font-semibold text-gray-900 hover:border-black hover:shadow-medium transition-all duration-300 active:scale-95 flex items-center gap-3 overflow-hidden"
+            className="group relative px-8 py-2 bg-white border-2 border-gray-200 rounded-2xl font-semibold text-gray-900 hover:border-black hover:shadow-medium transition-all duration-300 active:scale-95 flex items-center gap-3 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             <Search className="h-6 w-6 text-gray-700 group-hover:text-black transition-colors relative z-10" />
@@ -117,7 +117,7 @@ export const Home = React.memo(() => {
 
           <button
             onClick={() => navigate("/add-salary")}
-            className="group relative px-8 py-4 bg-black text-white rounded-2xl font-semibold hover:bg-gray-900 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center gap-3 overflow-hidden"
+            className="group relative px-8 py-2 bg-black text-white rounded-2xl font-semibold hover:bg-gray-900 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center gap-3 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             <Plus className="h-6 w-6 relative z-10" />
@@ -126,7 +126,7 @@ export const Home = React.memo(() => {
 
           <button
             onClick={() => navigate("/cameroon")}
-            className="group relative px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl font-medium hover:from-green-100 hover:to-emerald-100 hover:text-green-800 transition-all duration-200 active:scale-98 flex items-center gap-2"
+            className="group relative px-6 py-2 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl font-medium hover:from-green-100 hover:to-emerald-100 hover:text-green-800 transition-all duration-200 active:scale-98 flex items-center gap-2"
           >
             <span className="text-sm">Salaires Cameroun 🇨🇲</span>
             <svg

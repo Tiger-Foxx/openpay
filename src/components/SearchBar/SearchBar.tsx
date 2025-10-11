@@ -124,7 +124,7 @@ export const SearchBar = React.memo<SearchBarProps>(
           </p>
 
           {/* Exemples cliquables */}
-          <div className="flex flex-wrap justify-center gap-2 text-xs">
+          {/* <div className="flex flex-wrap justify-center gap-2 text-xs">
             <span className="text-gray-400">Exemples rapides :</span>
             {[
               "Senior Backend Developer",
@@ -144,7 +144,7 @@ export const SearchBar = React.memo<SearchBarProps>(
                 {example}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
 
         <form onSubmit={handleSubmit} className="relative">

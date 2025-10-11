@@ -91,7 +91,7 @@ export const FindMyJobMobile = React.memo(() => {
     <div className="space-y-6 pb-12">
       {/* Header Mobile Compact */}
       <div className="text-center">
-        <div className="w-32 h-32 mx-auto mb-3">
+        <div className="w-42 h-42 mx-auto mb-3">
           <Lottie
             animationData={workBalanceAnimation}
             loop={true}
