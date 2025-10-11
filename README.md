@@ -2,7 +2,10 @@
 
 #  OpenPay
 
-<img src="./public/logo-pay.png" alt="OpenPay Logo" width="200"/>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/public/logo-open.png" alt="Logo Open" width="150"/>
+  <img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/public/logo-pay.png" alt="Logo Pay" width="150"/>
+</p>
 
 ### Enfin Savoir Combien Tu Vaux (ou pas) sur le Marché Tech
 
@@ -14,7 +17,7 @@
 
 [🚀 Démo Live](https://openpay-cameroon.vercel.app/) | [📖 Documentation](#documentation) | [🤝 Contribuer](#-contribuer)
 
-<img src="./src/assets/logos/logo-fox-light.png" alt="The Fox Logo" width="120"/>
+<img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/src/assets/logos/logo-fox-light.png" alt="The Fox Logo" width="120"/>
 
 **By [The Fox](https://the-fox.tech) - Computer Engineering Scientist**
 
@@ -24,6 +27,7 @@
 
 ## 📋 Table des Matières
 
+- [Captures d'Écran](#-captures-décran)
 - [À Propos](#-à-propos)
 - [Problème & Solution](#-problème--solution)
 - [Fonctionnalités](#-fonctionnalités)
@@ -39,6 +43,26 @@
 - [Roadmap](#-roadmap)
 - [License](#-license)
 - [Crédits](#-crédits)
+
+---
+
+## 📸 Captures d'Écran
+
+<div align="center">
+
+### 🏠 Page d'Accueil
+<img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/screenshoots/home.png" alt="Page d'accueil OpenPay" width="800"/>
+
+### 🔍 Page d'Accueil - Zoom
+<img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/screenshoots/home_zoom.png" alt="Page d'accueil détaillée" width="800"/>
+
+### 🤔 Trouver Mon Métier
+<img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/screenshoots/whatsmyjob.png" alt="Recherche de métier par compétences" width="800"/>
+
+### ➕ Ajouter un Salaire
+<img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/screenshoots/add%20salary.png" alt="Formulaire d'ajout de salaire" width="800"/>
+
+</div>
 
 ---
 
@@ -761,7 +785,7 @@ Ce projet est sous license **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
 
 <div align="center">
 
-<img src="./src/assets/logos/logo-fox-dark.png" alt="The Fox" width="100"/>
+<img src="./src/assets/logos/logo-fox-light.png" alt="The Fox" width="100"/>
 
 **[The Fox](https://the-fox.tech)**  
 *Computer Engineering Scientist*
@@ -788,7 +812,7 @@ Ce projet est sous license **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
 
 ### ⭐ Si OpenPay t'a aidé, lâche une étoile sur GitHub !
 
-**Fait avec ❤️ et beaucoup de ☕ par [The Fox](https://the-fox.tech)**
+**Fait avec ❤️ par [The Fox](https://the-fox.tech)**
 
 *Parce qu'au final, la transparence salariale, c'est un droit.*
 
