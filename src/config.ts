@@ -22,7 +22,7 @@ export const config = {
 
   // Supabase Configuration
   supabase: {
-    enabled: false, // Toggle pour activer/désactiver Supabase
+    enabled: true, // Toggle pour activer/désactiver Supabase
     url: import.meta.env.VITE_SUPABASE_URL || "",
     anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || "",
     tableName: "salaries",
@@ -40,7 +40,7 @@ export const config = {
   // UI Configuration
   ui: {
     itemsPerPage: 20,
-    minDataPointsForStats: 5, // Minimum de salaires pour afficher des stats
+    minDataPointsForStats: 3, // Minimum de salaires pour afficher des stats
     defaultChartHeight: 400,
     mobileBreakpoint: 768, // px
   },

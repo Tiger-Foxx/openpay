@@ -78,17 +78,3 @@ export async function findMatchingJobs(
     );
   }
 }
-
-/**
- * DEPRECATED : Les roadmaps sont maintenant générées directement par l'IA
- * dans llmService.matchJobsBySkills() avec contexte complet du profil utilisateur.
- *
- * Cette fonction est conservée pour compatibilité mais ne devrait plus être utilisée.
- */
-export function generateLearningResources(_missingSkills: string[]): string[] {
-  console.log("missing skills : ", _missingSkills);
-  console.warn(
-    "[JobMatcher] generateLearningResources() is deprecated. Use AI-recommended roadmaps from matchJobsBySkills() instead."
-  );
-  return [];
-}
