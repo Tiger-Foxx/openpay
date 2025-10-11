@@ -156,10 +156,23 @@ export const ResultsMobile = React.memo(() => {
       {/* Stats */}
       <StatsOverview stats={stats} />
 
-      {/* AI Summary */}
+      {/* AI Summary - Mobile optimisé */}
       {aiSummary && (
-        <Collapse title="Résumé IA">
-          <p className="text-sm text-gray-700 leading-relaxed">{aiSummary}</p>
+        <Collapse title="Résumé des Salaires" defaultOpen={true}>
+          <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+            {aiSummary.split(". ").map(
+              (sentence, index) =>
+                sentence.trim() && (
+                  <p key={index} className="flex items-start gap-2">
+                    <span className="text-gray-400 mt-0.5">•</span>
+                    <span>
+                      {sentence.trim()}
+                      {!sentence.endsWith(".") && "."}
+                    </span>
+                  </p>
+                )
+            )}
+          </div>
         </Collapse>
       )}
 

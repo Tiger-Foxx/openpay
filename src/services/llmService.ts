@@ -1,6 +1,6 @@
 // src/services/llmService.ts
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { SalaryStatistics } from "@/models/statistics";
 import { UserSkills, JobMatchResult } from "@/models/jobMatch";
 import { config } from "@/config";
@@ -13,12 +13,12 @@ import { config } from "@/config";
  * - Job matching basé sur compétences
  */
 
-let genAI: GoogleGenerativeAI | null = null;
+let genAI: GoogleGenAI | null = null;
 
 /**
- * Initialise le client Gemini
+ * Initialise le client Gemini (nouvelle API @google/genai)
  */
-function getGenAI(): GoogleGenerativeAI {
+function getGenAI(): GoogleGenAI {
   if (!config.llm.apiKey) {
     console.error("[LLM] ❌ ERREUR: Clé API Gemini manquante!");
     console.error(
@@ -28,8 +28,10 @@ function getGenAI(): GoogleGenerativeAI {
   }
 
   if (!genAI) {
-    genAI = new GoogleGenerativeAI(config.llm.apiKey);
-    console.log("[LLM] ✅ Client Gemini initialisé");
+    genAI = new GoogleGenAI({ apiKey: config.llm.apiKey });
+    console.log(
+      "[LLM] ✅ Client Gemini initialisé (nouvelle API @google/genai)"
+    );
     console.log(
       "[LLM] 🔑 Clé API (premiers 10 chars):",
       config.llm.apiKey.substring(0, 10) + "..."
@@ -102,27 +104,39 @@ function parseJSONFromLLM(response: string): Record<string, unknown> {
 
 /**
  * Fonction utilitaire pour appeler le LLM avec gestion d'erreurs
+ * Utilise la nouvelle API @google/genai
  */
 async function callLLM(prompt: string): Promise<string> {
   try {
     const ai = getGenAI();
-    const model = ai.getGenerativeModel({ model: config.llm.model });
 
     console.log(
       "[LLM] 📤 Envoi prompt (premiers 200 chars):",
       prompt.substring(0, 200)
     );
 
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: {
+    // Nouvelle syntaxe API @google/genai
+    const response = await ai.models.generateContent({
+      model: config.llm.model,
+      contents: prompt,
+      config: {
         temperature: config.llm.temperature,
         maxOutputTokens: config.llm.maxTokens,
       },
     });
 
-    const response = result.response;
-    const text = response.text();
+    console.log("[LLM] 🔍 Réponse API complète:", response);
+
+    const text = response.text || "";
+
+    if (!text || text.trim().length === 0) {
+      console.error("[LLM] ⚠️ Réponse vide du LLM!");
+      console.error(
+        "[LLM] 📋 Debug - response:",
+        JSON.stringify(response, null, 2)
+      );
+      throw new Error("Réponse vide du LLM");
+    }
 
     console.log(
       "[LLM] 📥 Réponse brute (premiers 500 chars):",
@@ -134,14 +148,13 @@ async function callLLM(prompt: string): Promise<string> {
       "caractères"
     );
 
-    if (!text || text.trim().length === 0) {
-      console.error("[LLM] ⚠️ Réponse vide du LLM!");
-      throw new Error("Réponse vide du LLM");
-    }
-
     return text;
   } catch (error) {
-    console.error("[LLM] Erreur lors de l'appel:", error);
+    console.error("[LLM] ❌ Erreur lors de l'appel:", error);
+    console.error(
+      "[LLM] 💡 Détails:",
+      error instanceof Error ? error.message : String(error)
+    );
     throw new Error(
       "Erreur lors de la communication avec l'IA. Veuillez réessayer."
     );
@@ -259,38 +272,56 @@ export async function generateStatsSummary(
   }
 
   try {
-    const prompt = `Tu es FOX, analyste senior en rémunération tech avec expertise en interprétation statistique et communication de données RH. Ta mission : rendre les chiffres compréhensibles et actionnables pour TOUS les profils (juniors, seniors, recruteurs, candidats).
+    const prompt = `Tu es Fox, expert en salaires tech. Rédige un résumé ULTRA-CLAIR, organisé en POINTS COURTS, adapté mobile (pas de colonnes, pas de phrases trop longues).
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 STATISTIQUES À ANALYSER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Échantillon : ${stats.count} salaires
-• Salaire moyen : ${Math.round(stats.mean)}€
-• Médiane (valeur centrale) : ${Math.round(stats.median)}€
-• Écart-type (variabilité) : ${Math.round(stats.stdDev)}€
-• Amplitude : ${Math.round(stats.min)}€ → ${Math.round(stats.max)}€
-• Premier quartile (25% gagnent moins) : ${Math.round(stats.quartiles.q1)}€
-• Troisième quartile (75% gagnent moins) : ${Math.round(stats.quartiles.q3)}€
-• Salaire moyen débutant (0-2 ans) : ${Math.round(stats.leastExperiencedAvg)}€
-• Salaire moyen expérimenté (10+ ans) : ${Math.round(stats.mostExperiencedAvg)}€
+📊 DONNÉES (${stats.count} salaires analysés) :
+• Salaire médian (typique) : ${Math.round(stats.median)}€/an
+• Fourchette globale : ${Math.round(stats.min)}€ → ${Math.round(stats.max)}€
+• 50% gagnent PLUS de ${Math.round(stats.quartiles.median)}€
+• 25% gagnent MOINS de ${Math.round(stats.quartiles.q1)}€
 
-🎯 TON OBJECTIF : Rédiger un résumé accessible et impactant
+💼 ÉVOLUTION AVEC L'EXPÉRIENCE :
+• Juniors (0-2 ans) : ${Math.round(stats.leastExperiencedAvg)}€ en moyenne
+${
+  stats.juniorMaxSalary
+    ? `• 🏆 Meilleur junior : ${Math.round(stats.juniorMaxSalary)}€ - ${
+        stats.juniorMaxDetails
+      }`
+    : ""
+}
+• Seniors (10+ ans) : ${Math.round(stats.mostExperiencedAvg)}€ en moyenne
+${
+  stats.seniorMaxSalary
+    ? `• 🏆 Meilleur senior : ${Math.round(stats.seniorMaxSalary)}€ - ${
+        stats.seniorMaxDetails
+      }`
+    : ""
+}
 
-📝 STRUCTURE ATTENDUE (3-5 phrases max) :
-1. Phrase d'accroche avec chiffres clés (moyenne/médiane)
-2. Explication simple des quartiles (en 1 courte phrase)
-3. Analyse de la progression salariale junior→senior (% d'augmentation)
-4. Interprétation de l'écart-type (forte/faible variabilité et ce que ça signifie)
-5. Insight actionnable (conseil court pour le lecteur)
+🎯 STRUCTURE OBLIGATOIRE (phrases courtes, claires, mobile-first) :
+1. Une phrase sur le salaire typique (médiane)
+2. Une phrase sur l'évolution junior → senior avec les moyennes
+3. Une phrase mentionnant le meilleur profil junior si disponible
+4. Une phrase mentionnant le meilleur profil senior si disponible
+5. Une phrase d'encouragement ou conseil actionnable
 
-✍️ STYLE :
-• Ton professionnel mais chaleureux et encourageant
-• Accessible à quelqu'un sans bagage statistique
-• Utilise des métaphores si besoin pour clarifier
-• Évite absolument le jargon technique non expliqué
-• Concentre-toi sur ce que ça SIGNIFIE pour le lecteur
+✍️ RÈGLES D'OR :
+• PHRASES COURTES (15-20 mots max chacune)
+• AUCUN jargon technique (pas "quartile", "écart-type", etc.)
+• REFORMULE simplement : "50% gagnent plus de X€" au lieu de "médiane"
+• TON conversationnel et encourageant
+• MOBILE-FIRST : pas de mise en page complexe, juste des phrases qui se lisent facilement
 
-⚠️ IMPÉRATIF : Réponds UNIQUEMENT avec le texte du résumé, sans formatage markdown, sans titre, sans JSON.`;
+❌ INTERDICTIONS :
+• Markdown, JSON, titres
+• Phrases de plus de 25 mots
+• Formulations techniques ou corporate
+• Oublier de mentionner les meilleurs profils junior/senior
+
+✅ EXEMPLE (ton attendu) :
+"Le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud !"
+
+Réponds UNIQUEMENT avec le texte du résumé :`;
 
     const response = await callLLM(prompt);
     return response.trim();

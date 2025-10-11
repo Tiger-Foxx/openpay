@@ -46,6 +46,28 @@ export function calculateStatistics(
       ? calculateMean(mostExperienced.map((s) => s.compensation))
       : mean;
 
+  // Salaire MAX junior (0-2 ans)
+  let juniorMaxSalary: number | undefined;
+  let juniorMaxDetails: string | undefined;
+  if (leastExperienced.length > 0) {
+    const juniorMax = leastExperienced.reduce((max, current) =>
+      current.compensation > max.compensation ? current : max
+    );
+    juniorMaxSalary = juniorMax.compensation;
+    juniorMaxDetails = `${juniorMax.title} chez ${juniorMax.company} (${juniorMax.location})`;
+  }
+
+  // Salaire MAX senior (10+ ans)
+  let seniorMaxSalary: number | undefined;
+  let seniorMaxDetails: string | undefined;
+  if (mostExperienced.length > 0) {
+    const seniorMax = mostExperienced.reduce((max, current) =>
+      current.compensation > max.compensation ? current : max
+    );
+    seniorMaxSalary = seniorMax.compensation;
+    seniorMaxDetails = `${seniorMax.title} chez ${seniorMax.company} (${seniorMax.location})`;
+  }
+
   // Titres agrégés
   const jobTitles = Array.from(new Set(salaries.map((s) => s.title)));
 
@@ -61,6 +83,10 @@ export function calculateStatistics(
     remoteBreakdown,
     leastExperiencedAvg,
     mostExperiencedAvg,
+    juniorMaxSalary,
+    juniorMaxDetails,
+    seniorMaxSalary,
+    seniorMaxDetails,
     calculatedAt: new Date().toISOString(),
     jobTitles,
   };

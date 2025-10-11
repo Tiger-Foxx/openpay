@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar/SearchBar";
 import { NaturalLanguageInput } from "@/components/SearchBar/NaturalLanguageInput";
+import logoFox from "@/assets/logos/logo-fox-dark.png";
 
 export const Home = React.memo(() => {
   const navigate = useNavigate();
@@ -36,6 +37,17 @@ export const Home = React.memo(() => {
             <h1 className="text-7xl sm:text-8xl font-black text-black tracking-tight">
               OpenPay
             </h1>
+
+            {/* by Fox - Signature discrète */}
+            <div className="flex items-center justify-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
+              <span className="text-sm font-light text-gray-500">by</span>
+              <img
+                src={logoFox}
+                alt="Fox Logo"
+                className="h-6 w-auto object-contain"
+              />
+            </div>
+
             <p className="text-2xl sm:text-3xl font-medium text-gray-600">
               Salaires Tech en toute transparence
             </p>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBarMobile } from "@/components/SearchBar/SearchBarMobile";
 import { NaturalLanguageInput } from "@/components/SearchBar/NaturalLanguageInput";
+import logoFox from "@/assets/logos/logo-fox-dark.png";
 
 export const HomeMobile = React.memo(() => {
   const navigate = useNavigate();
@@ -25,6 +26,17 @@ export const HomeMobile = React.memo(() => {
           <span className="text-white font-bold text-3xl">O</span>
         </div>
         <h1 className="text-4xl font-bold text-black mb-2">OpenPay</h1>
+
+        {/* by Fox - Version mobile */}
+        <div className="flex items-center justify-center gap-1.5 mb-3 opacity-60">
+          <span className="text-xs font-light text-gray-500">by</span>
+          <img
+            src={logoFox}
+            alt="Fox Logo"
+            className="h-5 w-auto object-contain"
+          />
+        </div>
+
         <p className="text-lg text-gray-600 mb-2">Salaires Tech transparents</p>
         <p className="text-sm text-gray-500 px-4">
           Découvrez les salaires réels de la communauté dev

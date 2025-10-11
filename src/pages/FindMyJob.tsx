@@ -116,6 +116,12 @@ export const FindMyJob = React.memo(() => {
                 Technologies & Compétences{" "}
                 <span className="text-red-500">*</span>
               </label>
+              <p className="text-xs text-gray-500 mb-3">
+                💡 Soyez précis : mentionnez les frameworks (React, Vue,
+                Angular), les langages (Python, Java, TypeScript), les outils
+                (Docker, Kubernetes, AWS), et les compétences métier
+                (Architecture, Management, Agile)
+              </p>
               <div className="flex gap-2 mb-3">
                 <input
                   type="text"
@@ -127,7 +133,7 @@ export const FindMyJob = React.memo(() => {
                       handleAddTech();
                     }
                   }}
-                  placeholder="Ex: React, Node.js, Docker..."
+                  placeholder="Ex: React, TypeScript, REST API, PostgreSQL, AWS, Git..."
                   className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
                 />
                 <Button
@@ -138,6 +144,40 @@ export const FindMyJob = React.memo(() => {
                   Ajouter
                 </Button>
               </div>
+
+              {/* Suggestions rapides */}
+              {formData.technologies.length === 0 && (
+                <div className="mb-3">
+                  <p className="text-xs text-gray-500 mb-2">
+                    Suggestions rapides :
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      "React",
+                      "TypeScript",
+                      "Node.js",
+                      "Python",
+                      "AWS",
+                      "Docker",
+                      "PostgreSQL",
+                    ].map((tech) => (
+                      <button
+                        key={tech}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            technologies: [...prev.technologies, tech],
+                          }));
+                        }}
+                        className="px-2 py-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs text-gray-700 transition-colors"
+                      >
+                        + {tech}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {formData.technologies.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {formData.technologies.map((tech, index) => (
@@ -168,6 +208,11 @@ export const FindMyJob = React.memo(() => {
               >
                 Formation <span className="text-red-500">*</span>
               </label>
+              <p className="text-xs text-gray-500 mb-2">
+                💡 Précisez le niveau (Bac+2, Bac+3, Bac+5...), la spécialité
+                (Informatique, Data, Réseau...) et le type de diplôme (Master,
+                Licence, DUT, École d'ingénieur, Bootcamp...)
+              </p>
               <input
                 id="education"
                 type="text"
@@ -178,7 +223,7 @@ export const FindMyJob = React.memo(() => {
                     education: e.target.value,
                   }))
                 }
-                placeholder="Ex: Bac+5 Informatique, Licence Développement Web..."
+                placeholder="Ex: Master (Bac+5) en Informatique spécialité Développement Web et Mobile"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
               />
             </div>

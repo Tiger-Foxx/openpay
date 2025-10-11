@@ -64,24 +64,21 @@ export const Modal = React.memo<ModalProps>(
 
         {/* Panel */}
         <div
-          className={`relative bg-white rounded-2xl shadow-medium w-full ${sizeStyles[size]} animate-slide-up max-h-[90vh] overflow-hidden flex flex-col`}
+          className={`relative bg-white rounded-2xl shadow-large w-full ${sizeStyles[size]} animate-slide-up max-h-[85vh] overflow-hidden flex flex-col`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
               {title && (
-                <h2
-                  id="modal-title"
-                  className="text-xl font-semibold text-black"
-                >
+                <h2 id="modal-title" className="text-2xl font-bold text-black">
                   {title}
                 </h2>
               )}
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-2 -mr-2 text-gray-500 hover:text-black transition-colors rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black"
+                  className="p-2 -mr-2 text-gray-400 hover:text-black transition-colors rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black/20"
                   aria-label="Fermer"
                 >
                   <svg
@@ -90,11 +87,11 @@ export const Modal = React.memo<ModalProps>(
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    strokeWidth={2}
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
@@ -103,8 +100,10 @@ export const Modal = React.memo<ModalProps>(
             </div>
           )}
 
-          {/* Content */}
-          <div className="px-6 py-6 overflow-y-auto flex-1">{children}</div>
+          {/* Content avec scrollbar personnalisée */}
+          <div className="px-6 py-6 overflow-y-auto flex-1 modal-content">
+            {children}
+          </div>
         </div>
       </div>
     );

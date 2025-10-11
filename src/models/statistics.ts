@@ -43,6 +43,12 @@ export interface SalaryStatistics {
   leastExperiencedAvg: number; // Moyenne des 0-2 ans
   mostExperiencedAvg: number; // Moyenne des 10+ ans
 
+  // Salaires MAX pour insights
+  juniorMaxSalary?: number; // Salaire junior le plus élevé (0-2 ans)
+  juniorMaxDetails?: string; // Détails du profil (ex: "Développeur React à Paris")
+  seniorMaxSalary?: number; // Salaire senior le plus élevé (10+ ans)
+  seniorMaxDetails?: string; // Détails du profil (ex: "Lead Architect chez Google")
+
   // Métadonnées
   calculatedAt: string; // ISO timestamp
   jobTitles: string[]; // Titres agrégés

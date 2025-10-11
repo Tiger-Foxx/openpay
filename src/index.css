@@ -114,29 +114,54 @@ body {
 
 /* Scrollbar personnalisée (Webkit) */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(243 244 246);
-  border-radius: 5px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(156 163 175);
-  border-radius: 5px;
+  background: rgb(203 213 225);
+  border-radius: 10px;
   transition: background 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(107 114 128);
+  background: rgb(156 163 175);
+}
+
+/* Scrollbar spéciale pour les modals - ultra fine et discrète */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: rgb(248 250 252);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgb(148 163 184);
 }
 
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(156 163 175) rgb(243 244 246);
+  scrollbar-color: rgb(203 213 225) transparent;
+}
+
+.modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225) rgb(248 250 252);
 }
 
 /* Utility classes */
@@ -322,10 +347,24 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Focus visible (accessibilité) */
+/* Suppression du outline par défaut sur les inputs */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/* Focus visible seulement pour la navigation clavier (accessibilité) */
 *:focus-visible {
   outline: 2px solid black;
   outline-offset: 2px;
+}
+
+/* Mais on désactive le outline pour les inputs qui ont déjà un style focus */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none !important;
 }
 
 /* Selection text */

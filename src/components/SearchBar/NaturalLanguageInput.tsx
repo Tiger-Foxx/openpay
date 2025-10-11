@@ -72,25 +72,59 @@ export const NaturalLanguageInput = React.memo<NaturalLanguageInputProps>(
               />
             </svg>
           </button>
-          <div>
+          <div className="flex-1">
             <h2 className="text-2xl font-bold">Décrire mon métier</h2>
             <p className="text-gray-600 text-sm mt-1">
               Expliquez ce que vous faites au quotidien, l'IA vous proposera le
               métier correspondant
             </p>
+
+            {/* Conseils de précision */}
+            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-xs text-blue-900 font-medium mb-1">
+                💡 Pour de meilleurs résultats, mentionnez :
+              </p>
+              <ul className="text-xs text-blue-800 space-y-1">
+                <li>
+                  • <span className="font-semibold">Niveau d'expérience</span> :
+                  Junior, Senior, Lead, Principal...
+                </li>
+                <li>
+                  • <span className="font-semibold">Technologies</span> : React,
+                  Python, AWS, Kubernetes...
+                </li>
+                <li>
+                  • <span className="font-semibold">Responsabilités</span> :
+                  Développement, architecture, management...
+                </li>
+                <li>
+                  • <span className="font-semibold">Domaine</span> : Backend,
+                  Frontend, Mobile, Data, DevOps...
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Ex: Je développe des applications web avec React et Node.js, je gère aussi les déploiements avec Docker..."
-            rows={6}
-            className="w-full px-6 py-4 border-2 border-black rounded-2xl focus:outline-none focus:ring-4 focus:ring-black/10 transition-all duration-200 bg-white resize-none shadow-soft"
-            aria-label="Description de votre métier"
-          />
+          <div className="relative">
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Exemple précis : Je suis Senior Backend Developer avec 5 ans d'expérience. Je développe des API REST en Node.js et TypeScript, j'utilise PostgreSQL et Redis. Je manage une équipe de 3 développeurs juniors et je participe à l'architecture des nouveaux services..."
+              rows={6}
+              className="w-full px-6 py-4 border-2 border-black rounded-2xl focus:outline-none focus:ring-4 focus:ring-black/10 transition-all duration-200 bg-white resize-none shadow-soft"
+              aria-label="Description de votre métier"
+            />
+            {/* Compteur de caractères */}
+            <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+              {description.length} caractères{" "}
+              {description.length < 50 &&
+                description.length > 0 &&
+                "• Ajoutez plus de détails"}
+            </div>
+          </div>
 
           {error && (
             <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">

@@ -15,8 +15,8 @@ export const config = {
   // LLM Configuration (Gemini)
   llm: {
     apiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
-    model: "gemini-2.5-flash", // ou 'gemini-pro'
-    maxTokens: 2048,
+    model: "gemini-2.5-flash", // Nouveau modèle rapide avec @google/genai
+    maxTokens: 33048,
     temperature: 0.3, // Plus bas = plus déterministe
   },
 

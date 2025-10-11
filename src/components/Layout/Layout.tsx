@@ -11,12 +11,12 @@ export interface LayoutProps {
 export const Layout = React.memo<LayoutProps>(({ children }) => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* Header flottant */}
+      {/* Header ultra-fin */}
       <Header />
 
-      {/* Main Content - padding-top pour compenser header fixed */}
-      <main className="flex-1 pt-24 sm:pt-28 pb-12 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto">{children}</div>
+      {/* Main Content — padding-top ajusté pour header de 56px */}
+      <main className="flex-1 pt-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">{children}</div>
       </main>
 
       {/* Footer */}
