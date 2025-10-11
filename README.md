@@ -1,8 +1,8 @@
 <div align="center">
 
-# 💰 OpenPay
+#  OpenPay
 
-<img src="./public/logo-open.png" alt="OpenPay Logo" width="200"/>
+<img src="./public/logo-pay.png" alt="OpenPay Logo" width="200"/>
 
 ### Enfin Savoir Combien Tu Vaux (ou pas) sur le Marché Tech
 
@@ -14,9 +14,9 @@
 
 [🚀 Démo Live](https://openpay-cameroon.vercel.app/) | [📖 Documentation](#documentation) | [🤝 Contribuer](#-contribuer)
 
-<img src="./src/assets/logos/logo-fox-dark.png" alt="The Fox Logo" width="120"/>
+<img src="./src/assets/logos/logo-fox-light.png" alt="The Fox Logo" width="120"/>
 
-**Créé par [The Fox](https://the-fox.tech) - Computer Engineering Scientist**
+**By [The Fox](https://the-fox.tech) - Computer Engineering Scientist**
 
 ---
 
