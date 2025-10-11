@@ -210,6 +210,7 @@ export async function generateStatsSummary(
 export interface JobSuggestion {
   title: string;
   confidence: number; // 0-100
+  reasoning?: string; // Justification courte de la recommandation
 }
 
 export async function parseNaturalLanguageJob(
