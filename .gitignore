@@ -5,7 +5,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+article.html
 lerna-debug.log*
+instructions.txt
 
 node_modules
 dist

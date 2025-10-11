@@ -187,9 +187,17 @@ export const SalaryTable = React.memo<SalaryTableProps>(
                     {salary.location}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-base font-semibold text-black">
-                      {formatSalary(salary.compensation)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-semibold text-black">
+                        {formatSalary(
+                          salary.compensation,
+                          salary.country === "Cameroun" ? "XAF" : "EUR"
+                        )}
+                      </span>
+                      {salary.country === "Cameroun" && (
+                        <span className="text-sm">🇨🇲</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {salary.total_xp} an{salary.total_xp > 1 ? "s" : ""}

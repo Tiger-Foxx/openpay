@@ -21,7 +21,7 @@ export const Header = React.memo(() => {
   const navItems = [
     { name: "Accueil", path: "/" },
     { name: "Trouver mon Métier", path: "/find-my-job" },
-    { name: "Ajouter Salaire", path: "/add-salary" },
+    { name: "Ajouter mon Salaire", path: "/add-salary" },
     { name: "Cameroun", path: "/cameroon" },
   ];
 

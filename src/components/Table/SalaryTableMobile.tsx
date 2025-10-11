@@ -41,9 +41,17 @@ export const SalaryTableMobile = React.memo<SalaryTableMobileProps>(
                 )}
               </div>
               <div className="text-right shrink-0">
-                <p className="text-xl font-bold text-black">
-                  {formatSalary(salary.compensation)}
-                </p>
+                <div className="flex items-center justify-end gap-2">
+                  <p className="text-xl font-bold text-black">
+                    {formatSalary(
+                      salary.compensation,
+                      salary.country === "Cameroun" ? "XAF" : "EUR"
+                    )}
+                  </p>
+                  {salary.country === "Cameroun" && (
+                    <span className="text-lg">🇨🇲</span>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -60,7 +60,7 @@ export function exportToPDF(options: PDFExportOptions): void {
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(0, 0, 0);
-    doc.text("📊 Résumé de l'Analyse", 14, yPos);
+    doc.text("Résumé de l'Analyse", 14, yPos);
     yPos += 6;
 
     doc.setFontSize(9);
@@ -82,7 +82,7 @@ export function exportToPDF(options: PDFExportOptions): void {
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text("💰 Statistiques Principales", 14, yPos);
+  doc.text("Statistiques Principales", 14, yPos);
   yPos += 2;
 
   doc.setFontSize(9);
@@ -113,7 +113,7 @@ export function exportToPDF(options: PDFExportOptions): void {
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text("📈 Salaires par Expérience", 14, yPos);
+  doc.text("Salaires par Expérience", 14, yPos);
   yPos += 6;
 
   autoTable(doc, {
@@ -143,7 +143,7 @@ export function exportToPDF(options: PDFExportOptions): void {
   doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text("📋 Détail des Salaires", 14, 20);
+  doc.text("Détail des Salaires", 14, 20);
 
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");

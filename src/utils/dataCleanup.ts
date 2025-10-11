@@ -33,7 +33,7 @@ export function filterValidSalaries(salaries: Salary[]): Salary[] {
       }
     } else {
       // Pour France/Autre (EUR) : accepter les montants entre 15k et 500k EUR
-      if (salary.compensation < 15000 || salary.compensation > 500000) {
+      if (salary.compensation < 1500 || salary.compensation > 50000000) {
         console.warn(`[DataCleanup] Salaire EUR hors limites rejeté: ${salary.compensation}€`);
         return false;
       }

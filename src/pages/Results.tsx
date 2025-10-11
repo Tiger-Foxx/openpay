@@ -7,7 +7,6 @@ import { SalaryStatistics } from "@/models/statistics";
 import { getCombinedSalaries } from "@/services/supabaseService";
 import { mapJobTitlesToDatabase } from "@/services/llmService";
 import { filterSalaries } from "@/services/salariesApi";
-import { getUniqueTitles } from "@/services/salariesApi";
 import { calculateStatistics } from "@/utils/statsCalculator";
 import {
   generateStatsSummary,
@@ -31,7 +30,8 @@ export const Results = React.memo(() => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [matchedSalaries, setMatchedSalaries] = useState<CleanedSalary[]>([]);
+  const [matchedSalaries, setMatchedSalaries] = useState<CleanedSalary[]>([]); // Originaux pour le tableau
+  const [normalizedSalaries, setNormalizedSalaries] = useState<CleanedSalary[]>([]); // Normalisés pour les graphes
   const [stats, setStats] = useState<SalaryStatistics | null>(null);
   const [aiSummary, setAiSummary] = useState<string>("");
   const [recommendedRoadmaps, setRecommendedRoadmaps] = useState<string[]>([]);
@@ -48,11 +48,17 @@ export const Results = React.memo(() => {
       setError(null);
 
       try {
-        // 1. Récupérer toutes les données
+        // 1. Récupérer toutes les données (combinées : salaires.dev + Supabase)
         const allSalaries = await getCombinedSalaries();
-        const allTitles = await getUniqueTitles();
+        
+        // 2. Extraire les titres uniques depuis TOUTES les sources (pas seulement salaires.dev)
+        const { extractUniqueTitles } = await import("@/utils/dataCleanup");
+        const allTitles = extractUniqueTitles(allSalaries.map(s => ({
+          ...s,
+          title: s.title || "",
+        })));
 
-        // 2. Mapper le job query vers des titres exacts avec LLM
+        // 3. Mapper le job query vers des titres exacts avec LLM
         const mappedTitles = await mapJobTitlesToDatabase(jobQuery, allTitles);
 
         if (mappedTitles.length === 0) {
@@ -63,7 +69,7 @@ export const Results = React.memo(() => {
           return;
         }
 
-        // 3. Filtrer les salaires correspondants
+        // 4. Filtrer les salaires correspondants
         const filtered = filterSalaries(allSalaries, { titles: mappedTitles });
 
         if (filtered.length < 5) {
@@ -74,20 +80,29 @@ export const Results = React.memo(() => {
           return;
         }
 
+        // Garder les salaires originaux pour l'affichage dans les tableaux
         setMatchedSalaries(filtered);
 
-        // 4. Calculer les statistiques (globales et par pays)
-        const statistics = calculateStatistics(filtered);
-        setStats(statistics);
-
-        // Séparer les salaires par pays et calculer les stats séparées si suffisamment de données
+        // 5. Séparer les salaires par pays AVANT normalisation
         const cameroonSalaries = filtered.filter(s => s.country === "Cameroun");
         const otherSalaries = filtered.filter(s => s.country !== "Cameroun");
 
-        // 5. Générer résumé IA avec les titres de postes ET les stats séparées
+        console.log(`[Results] Salaires trouvés: ${filtered.length} total (${cameroonSalaries.length} Cameroun, ${otherSalaries.length} autres)`);
+
+        // 6. Normaliser les salaires en EUR pour les calculs de statistiques globales
+        const { normalizeSalariesForCalculations } = await import("@/utils/currencyConverter");
+        const normalized = normalizeSalariesForCalculations(filtered);
+        setNormalizedSalaries(normalized);
+
+        // 7. Calculer les statistiques GLOBALES avec salaires normalisés en EUR
+        const statistics = calculateStatistics(normalized);
+        setStats(statistics);
+
+        // 8. Calculer les stats séparées par pays (SANS normalisation pour garder les vraies valeurs)
         const camStats = cameroonSalaries.length >= 3 ? calculateStatistics(cameroonSalaries) : undefined;
         const othStats = otherSalaries.length >= 3 ? calculateStatistics(otherSalaries) : undefined;
         
+        // 9. Générer le résumé IA avec les stats séparées
         const summary = await generateStatsSummary(
           statistics, 
           mappedTitles,
@@ -96,7 +111,7 @@ export const Results = React.memo(() => {
         );
         setAiSummary(summary);
 
-        // 6. Recommander des roadmaps pour ce métier
+        // 10. Recommander des roadmaps pour ce métier
         const roadmaps = await recommendRoadmapsForJob(mappedTitles);
         setRecommendedRoadmaps(roadmaps);
       } catch (err) {
@@ -159,7 +174,7 @@ export const Results = React.memo(() => {
   if (!stats) return null;
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="mt-10 space-y-8 pb-12">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="mt-8">
@@ -181,6 +196,26 @@ export const Results = React.memo(() => {
           </Button>
         </div>
       </div>
+
+      {/* Info sur conversion de devises si des salaires Cameroun sont présents */}
+      {matchedSalaries.some(s => s.country === "Cameroun") && (
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm text-blue-900 font-medium">
+                💱 Conversion automatique des devises
+              </p>
+              <p className="text-xs text-blue-800 mt-1">
+                Les salaires camerounais (FCFA) ont été convertis en EUR pour les statistiques et graphiques (1 EUR = 656 FCFA).
+                Le tableau ci-dessous affiche les montants originaux.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Overview */}
       <StatsOverview stats={stats} />
@@ -208,13 +243,13 @@ export const Results = React.memo(() => {
       {/* Experience Breakdown */}
       <ExperienceBreakdown data={stats.experienceBreakdown} />
 
-      {/* Main Chart */}
-      <SalaryDistribution salaries={matchedSalaries} />
+      {/* Main Chart - Utilise les salaires normalisés en EUR */}
+      <SalaryDistribution salaries={normalizedSalaries} />
 
-      {/* Additional Charts */}
+      {/* Additional Charts - Utilise les salaires normalisés en EUR */}
       {showAllCharts && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
-          <ExperienceChart salaries={matchedSalaries} />
+          <ExperienceChart salaries={normalizedSalaries} />
           <RemoteChart data={stats.remoteBreakdown} />
         </div>
       )}
