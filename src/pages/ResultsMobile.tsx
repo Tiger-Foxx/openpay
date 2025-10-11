@@ -69,7 +69,7 @@ export const ResultsMobile = React.memo(() => {
         const statistics = calculateStatistics(filtered);
         setStats(statistics);
 
-        const summary = await generateStatsSummary(statistics);
+        const summary = await generateStatsSummary(statistics, mappedTitles);
         setAiSummary(summary);
       } catch (err) {
         console.error("[ResultsMobile] Erreur:", err);

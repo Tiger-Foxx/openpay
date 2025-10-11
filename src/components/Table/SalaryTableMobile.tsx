@@ -25,19 +25,22 @@ export const SalaryTableMobile = React.memo<SalaryTableMobileProps>(
       <div className={`space-y-4 ${className}`}>
         {paginatedSalaries.map((salary, index) => (
           <Card key={index} className="space-y-3">
-            {/* Header */}
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="font-semibold text-lg text-black">
-                  {salary.company}
+            {/* Header avec Titre du Poste */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h4 className="font-bold text-base text-black mb-1">
+                  {salary.title}
                 </h4>
+                <p className="text-sm text-gray-600 font-medium">
+                  {salary.company}
+                </p>
                 {salary.level && (
-                  <span className="inline-block mt-1 px-2 py-1 bg-gray-100 text-xs font-medium rounded">
+                  <span className="inline-block mt-1.5 px-2 py-0.5 bg-gray-100 text-xs font-medium rounded">
                     {salary.level}
                   </span>
                 )}
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p className="text-xl font-bold text-black">
                   {formatSalary(salary.compensation)}
                 </p>

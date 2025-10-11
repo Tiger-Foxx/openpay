@@ -76,8 +76,8 @@ export const Results = React.memo(() => {
         const statistics = calculateStatistics(filtered);
         setStats(statistics);
 
-        // 5. Générer résumé IA
-        const summary = await generateStatsSummary(statistics);
+        // 5. Générer résumé IA avec les titres de postes
+        const summary = await generateStatsSummary(statistics, mappedTitles);
         setAiSummary(summary);
       } catch (err) {
         console.error("[Results] Erreur:", err);

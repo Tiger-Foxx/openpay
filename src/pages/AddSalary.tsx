@@ -6,6 +6,9 @@ import { Card } from "@/components/UI/Card";
 import { Salary } from "@/models/salary";
 import { addSalary } from "@/services/supabaseService";
 import { config } from "@/config";
+import { FileText } from "lucide-react";
+import Lottie from "lottie-react";
+import profileAnimation from "@/assets/lotties/Profile Avatar of Young Boy.json";
 
 export const AddSalary = React.memo(() => {
   const [formData, setFormData] = useState<Partial<Salary>>({
@@ -102,17 +105,32 @@ export const AddSalary = React.memo(() => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 pb-12">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-black mb-4">
-          Ajouter mon Salaire
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Contribuez à la transparence salariale en ajoutant votre salaire de
-          manière <strong>anonyme</strong>. Vos données aideront la communauté
-          tech (principalement dev pour le moment).
-        </p>
+    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+      {/* Header avec Lottie */}
+      <div className="grid md:grid-cols-2 gap-8 items-center">
+        {/* Left: Lottie Animation */}
+        <div className="flex justify-center md:block">
+          <Lottie
+            animationData={profileAnimation}
+            loop={true}
+            className="w-full max-w-[200px] md:max-w-xs mx-auto drop-shadow-2xl"
+          />
+        </div>
+
+        {/* Right: Text */}
+        <div className="text-center md:text-left">
+          <div className="flex items-center gap-3 justify-center md:justify-start mb-4">
+            <FileText className="h-8 w-8 text-gray-900" />
+            <h1 className="text-3xl sm:text-4xl font-bold text-black">
+              Ajouter mon Salaire
+            </h1>
+          </div>
+          <p className="text-gray-600 leading-relaxed">
+            Contribuez à la transparence salariale en ajoutant votre salaire de
+            manière <strong>anonyme</strong>. Vos données aideront la communauté
+            tech (principalement dev pour le moment).
+          </p>
+        </div>
       </div>
 
       {/* Success Message */}

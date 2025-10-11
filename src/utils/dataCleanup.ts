@@ -12,7 +12,7 @@ export function filterValidSalaries(salaries: Salary[]): Salary[] {
     // Compensation doit être > 0 et réaliste (entre 15k et 500k)
     if (
       !salary.compensation ||
-      salary.compensation < 15000 ||
+      salary.compensation < 1500 ||
       salary.compensation > 500000
     ) {
       return false;

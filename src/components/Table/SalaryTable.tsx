@@ -112,6 +112,9 @@ export const SalaryTable = React.memo<SalaryTableProps>(
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Poste
+                </th>
                 <th
                   className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                   onClick={() => handleSort("company")}
@@ -165,15 +168,20 @@ export const SalaryTable = React.memo<SalaryTableProps>(
             <tbody className="divide-y divide-gray-100">
               {paginatedSalaries.map((salary, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-black">
-                      {salary.company}
+                  <td className="px-6 py-4">
+                    <div className="font-semibold text-black">
+                      {salary.title}
                     </div>
                     {salary.level && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 mt-0.5">
                         {salary.level}
                       </div>
                     )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="font-medium text-gray-900">
+                      {salary.company}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {salary.location}

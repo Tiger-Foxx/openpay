@@ -67,25 +67,29 @@ export const Skeleton = React.memo<SkeletonProps>(
 
 Skeleton.displayName = "Skeleton";
 
-// Loader full-screen avec option Lottie
+// Loader full-screen avec Lottie fox-loader
+import Lottie from "lottie-react";
+import foxLoaderAnimation from "@/assets/lotties/fox-loader.json";
+
 export interface LoaderProps {
   text?: string;
-  lottie?: React.ReactNode; // Pour intégrer Lottie plus tard
 }
 
-export const Loader = React.memo<LoaderProps>(
-  ({ text = "Chargement...", lottie }) => {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-        {lottie || <Spinner size="lg" className="text-black" />}
-        {text && (
-          <p className="mt-6 text-base font-medium text-gray-700 animate-pulse">
-            {text}
-          </p>
-        )}
-      </div>
-    );
-  }
-);
+export const Loader = React.memo<LoaderProps>(({ text = "Chargement..." }) => {
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <Lottie
+        animationData={foxLoaderAnimation}
+        loop={true}
+        className="w-32 h-32 drop-shadow-xl"
+      />
+      {text && (
+        <p className="mt-6 text-base font-medium text-gray-700 animate-pulse-slow">
+          {text}
+        </p>
+      )}
+    </div>
+  );
+});
 
 Loader.displayName = "Loader";

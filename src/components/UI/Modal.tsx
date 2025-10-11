@@ -69,7 +69,7 @@ export const Modal = React.memo<ModalProps>(
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
               {title && (
                 <h2 id="modal-title" className="text-2xl font-bold text-black">
                   {title}
@@ -100,8 +100,8 @@ export const Modal = React.memo<ModalProps>(
             </div>
           )}
 
-          {/* Content avec scrollbar personnalisée */}
-          <div className="px-6 py-6 overflow-y-auto flex-1 modal-content">
+          {/* Content avec scrollbar personnalisée - min-h-0 pour éviter flex stretch */}
+          <div className="px-6 py-5 overflow-y-auto min-h-0 modal-content">
             {children}
           </div>
         </div>

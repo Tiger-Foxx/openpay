@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBarMobile } from "@/components/SearchBar/SearchBarMobile";
 import { NaturalLanguageInput } from "@/components/SearchBar/NaturalLanguageInput";
+import { AnimatedBackground } from "@/components/UI/AnimatedBackground";
+import { Search, Plus, Globe, ChevronRight } from "lucide-react";
+import Lottie from "lottie-react";
 import logoFox from "@/assets/logos/logo-fox-dark.png";
+import developerAnimation from "@/assets/lotties/Developer.json";
 
 export const HomeMobile = React.memo(() => {
   const navigate = useNavigate();
@@ -19,27 +23,48 @@ export const HomeMobile = React.memo(() => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-150px)] flex flex-col px-4 py-8">
-      {/* Hero Section Mobile */}
-      <div className="text-center mb-8 animate-fade-in">
-        <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <span className="text-white font-bold text-3xl">O</span>
-        </div>
-        <h1 className="text-4xl font-bold text-black mb-2">OpenPay</h1>
+    <div className="min-h-[calc(100vh-150px)] flex flex-col px-4 py-6 relative overflow-hidden">
+      {/* Animated Background avec particules */}
+      <AnimatedBackground />
 
-        {/* by Fox - Version mobile */}
-        <div className="flex items-center justify-center gap-1.5 mb-3 opacity-60">
-          <span className="text-xs font-light text-gray-500">by</span>
-          <img
-            src={logoFox}
-            alt="Fox Logo"
-            className="h-5 w-auto object-contain"
+      {/* Hero Section Mobile - Avec Lottie */}
+      <div className="text-center mb-6 animate-fade-in">
+        {/* Lottie Animation Mobile */}
+        <div className="w-32 h-32 mx-auto mb-4">
+          <Lottie
+            animationData={developerAnimation}
+            loop={true}
+            className="w-full h-full drop-shadow-xl"
           />
         </div>
 
-        <p className="text-lg text-gray-600 mb-2">Salaires Tech transparents</p>
-        <p className="text-sm text-gray-500 px-4">
-          Découvrez les salaires réels de la communauté dev
+        {/* Titre avec gradient */}
+        <div className="relative inline-block mb-2">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-cyan-500/10 blur-xl"></div>
+          <h1 className="relative text-5xl font-black bg-gradient-to-r from-gray-900 via-gray-800 to-black bg-clip-text text-transparent">
+            <div className="flex items-center gap-2">
+              <img
+                src="/logo-pay.png"
+                alt="OpenPay"
+                className="h-18 w-auto object-contain"
+              />
+            </div>
+          </h1>
+        </div>
+
+        {/* by Fox - Version mobile stylée */}
+        <div className="flex items-center justify-center gap-1.5 mb-3 opacity-60 hover:opacity-100 transition-opacity duration-300">
+          <span className="text-xs font-light text-gray-600">crafted by</span>
+          <img src={logoFox} alt="Fox" className="h-5 w-auto object-contain" />
+        </div>
+
+        <p className="text-xl font-bold bg-gradient-to-r from-orange-600 via-yellow-600 to-yellow-600 bg-clip-text text-transparent mb-2">
+          Salaires Tech transparents
+        </p>
+        <p className="text-sm text-gray-600 px-4 leading-relaxed">
+          Découvrez les salaires réels de{" "}
+          <span className="font-semibold text-black">700+</span> professionnels
+          tech
         </p>
       </div>
 
@@ -57,70 +82,46 @@ export const HomeMobile = React.memo(() => {
           />
         )}
 
-        {/* Quick Actions Mobile */}
+        {/* Quick Actions Mobile - Design magnifique */}
         {!isNaturalLanguageMode && (
-          <div className="mt-8 space-y-3">
+          <div
+            className="mt-6 space-y-3 animate-slide-up"
+            style={{ animationDelay: "200ms" }}
+          >
             <button
               onClick={() => navigate("/find-my-job")}
-              className="w-full px-6 py-4 bg-white border-2 border-black rounded-xl font-semibold hover:bg-black hover:text-white transition-all active:scale-98 flex items-center justify-between min-h-[60px]"
+              className="group w-full px-6 py-4 bg-white border-2 border-gray-300 rounded-2xl font-semibold hover:border-black hover:shadow-medium transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
             >
-              <span>Trouver mon Métier</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              <div className="flex items-center gap-3 relative z-10">
+                <Search className="h-5 w-5 text-gray-700 group-hover:text-black transition-colors" />
+                <span>Trouver mon Métier</span>
+              </div>
+              <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform relative z-10" />
             </button>
 
             <button
               onClick={() => navigate("/add-salary")}
-              className="w-full px-6 py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-all active:scale-98 flex items-center justify-between min-h-[60px]"
+              className="group w-full px-6 py-4 bg-black text-white rounded-2xl font-semibold hover:bg-gray-900 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
             >
-              <span>Ajouter mon Salaire</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              <div className="flex items-center gap-3 relative z-10">
+                <Plus className="h-5 w-5" />
+                <span>Ajouter mon Salaire</span>
+              </div>
+              <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform relative z-10" />
             </button>
 
             <button
               onClick={() => navigate("/cameroon")}
-              className="w-full px-6 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold hover:border-black transition-all active:scale-98 flex items-center justify-between min-h-[60px]"
+              className="group w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white border-2 border-green-700 rounded-2xl font-semibold hover:from-green-700 hover:to-emerald-700 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
             >
-              <span>Salaires Cameroun</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              <div className="flex items-center gap-3 relative z-10">
+                <Globe className="h-5 w-5" />
+                <span>Cameroun 🇨🇲</span>
+              </div>
+              <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform relative z-10" />
             </button>
           </div>
         )}

@@ -14,7 +14,7 @@ export const Footer = React.memo(() => {
   ];
 
   const externalLinks = [
-    { name: "GitHub OpenPay", url: "https://github.com/theTigerFox/openpay" },
+    { name: "GitHub OpenPay", url: "https://github.com/Tiger-Foxx/openpay" },
     { name: "Salaires.dev", url: "https://salaires.dev" },
     { name: "Roadmap.sh", url: "https://roadmap.sh" },
     { name: "Fox", url: "https://github.com/Tiger-Foxx" },
@@ -28,21 +28,27 @@ export const Footer = React.memo(() => {
           {/* Colonne 1 : Logo + Tagline */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">O</span>
-              </div>
-              <span className="text-2xl font-bold text-black">OpenPay</span>
+              <img
+                src="/logo-pay.png"
+                alt="OpenPay"
+                className="h-10 w-auto object-contain"
+              />
             </div>
             <p className="text-gray-600 text-sm mb-4">
               Salaires Tech en toute transparence
             </p>
             <a
-              href="https://github.com/theTigerFox"
+              href="https://github.com/Tiger-Foxx"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black transition-colors group"
             >
               <span>Créé par</span>
+              <img
+                src="https://avatars.githubusercontent.com/u/118616410?v=4"
+                alt="Fox Avatar"
+                className="w-6 h-6 rounded-full border-2 border-gray-200 group-hover:border-black transition-colors"
+              />
               <span className="font-bold">Fox</span>
             </a>
           </div>
@@ -135,7 +141,7 @@ export const Footer = React.memo(() => {
             <p>
               © {currentYear} OpenPay — Projet open-source par{" "}
               <a
-                href="https://github.com/theTigerFox"
+                href="https://github.com/Tiger-Foxx"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-black hover:underline"
@@ -146,7 +152,7 @@ export const Footer = React.memo(() => {
             <p className="mt-1">
               Données sous licence{" "}
               <a
-                href="https://github.com/theTigerFox/openpay"
+                href="https://github.com/Tiger-Foxx/openpay"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-black"

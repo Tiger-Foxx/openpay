@@ -104,17 +104,23 @@ export const SearchBar = React.memo<SearchBarProps>(
         {/* Helper text au-dessus */}
         <div className="text-center animate-fade-in">
           <p className="text-sm text-gray-600 font-medium mb-2">
-            💡 <span className="font-semibold">Astuce :</span> Soyez précis pour
-            de meilleurs résultats
+            <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded font-semibold">
+              Astuce
+            </span>{" "}
+            L'IA analyse votre recherche pour trouver les meilleures
+            correspondances
           </p>
           <p className="text-xs text-gray-500 mb-3">
-            Précisez le{" "}
-            <span className="font-semibold text-gray-700">niveau</span> (Senior,
-            Lead, Junior), les{" "}
-            <span className="font-semibold text-gray-700">technologies</span>{" "}
-            (React, AWS, Python), ou le{" "}
-            <span className="font-semibold text-gray-700">domaine</span>{" "}
-            (Backend, Mobile, Data)
+            Tapez en langage naturel :{" "}
+            <span className="font-semibold text-gray-700">
+              "je suis dev front end junior"
+            </span>
+            ,{" "}
+            <span className="font-semibold text-gray-700">
+              "développeur backend avec Python"
+            </span>
+            ... Ne vous souciez pas trop des suggestions, l'IA comprendra votre
+            intention !
           </p>
 
           {/* Exemples cliquables */}

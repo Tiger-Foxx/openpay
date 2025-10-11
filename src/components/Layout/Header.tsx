@@ -42,15 +42,14 @@ export const Header = React.memo(() => {
             {/* Logo OpenPay */}
             <Link
               to="/"
-              className="flex items-center gap-3 hover:opacity-70 transition-opacity group"
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity group"
               aria-label="OpenPay - Accueil"
             >
-              <div className="w-7 h-7 bg-black rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <span className="text-white font-bold text-sm">O</span>
-              </div>
-              <span className="text-lg font-bold text-black hidden sm:block">
-                OpenPay
-              </span>
+              <img
+                src="/logo-pay.png"
+                alt="OpenPay"
+                className="h-9 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
+              />
             </Link>
 
             {/* Navigation Desktop */}
@@ -76,30 +75,19 @@ export const Header = React.memo(() => {
               ))}
             </nav>
 
-            {/* Badge "by Fox" Desktop */}
+            {/* Avatar Fox Desktop */}
             <a
-              href="https://github.com/theTigerFox"
+              href="https://github.com/Tiger-Foxx"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all duration-200 text-xs font-medium text-gray-700 hover:text-black group"
+              className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity group"
               aria-label="Créé par Fox"
             >
-              <span>by</span>
-              <span className="font-bold">Fox</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
+              <img
+                src="https://avatars.githubusercontent.com/u/118616410?v=4"
+                alt="Fox"
+                className="w-9 h-9 rounded-full border-2 border-gray-200 group-hover:border-black transition-all duration-300 group-hover:scale-110"
+              />
             </a>
 
             {/* Hamburger Menu Mobile */}
@@ -135,14 +123,15 @@ export const Header = React.memo(() => {
         size="full"
         showCloseButton={false}
       >
-        <div className="min-h-screen bg-white p-6 flex flex-col">
+        <div className="flex flex-col h-full max-h-screen py-6">
           {/* Header Modal */}
-          <div className="flex items-center justify-between mb-12">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">O</span>
-              </div>
-              <span className="text-xl font-bold text-black">OpenPay</span>
+          <div className="flex items-center justify-between px-6 mb-6 shrink-0">
+            <div className="flex items-center gap-2">
+              <img
+                src="/logo-pay.png"
+                alt="OpenPay"
+                className="h-10 w-auto object-contain"
+              />
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
@@ -167,7 +156,7 @@ export const Header = React.memo(() => {
           </div>
 
           {/* Navigation Mobile */}
-          <nav className="flex-1 space-y-2">
+          <nav className="px-6 space-y-2 flex-shrink-0">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -184,15 +173,17 @@ export const Header = React.memo(() => {
             ))}
           </nav>
 
-          {/* Badge "by Fox" Mobile */}
-          <a
-            href="https://github.com/theTigerFox"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 w-full px-6 py-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-colors text-center font-medium text-gray-700 active:scale-98"
-          >
-            Créé par <span className="font-bold text-black">Fox</span>
-          </a>
+          {/* Badge "by Fox" Mobile - Fixed at bottom */}
+          <div className="mt-auto px-6 pt-6 shrink-0">
+            <a
+              href="https://github.com/Tiger-Foxx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-full px-6 py-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-colors font-medium text-gray-700 active:scale-98 min-h-[60px]"
+            >
+              Créé par <span className="font-bold text-black ml-1">Fox</span>
+            </a>
+          </div>
         </div>
       </Modal>
     </>

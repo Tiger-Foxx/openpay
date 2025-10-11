@@ -184,13 +184,13 @@ export async function mapJobTitlesToDatabase(
     console.log("[LLM] 🔍 mapJobTitlesToDatabase - Input:", userInput);
     console.log("[LLM] 📊 Nombre de titres disponibles:", allTitles.length);
 
-    // ⚠️ LIMITE: Réduire à 150 titres pour éviter de dépasser le contexte Gemini
-    const limitedTitles = allTitles.slice(0, 150);
+    // ⚠️ LIMITE: Réduire à 850 titres pour éviter de dépasser le contexte Gemini
+    const limitedTitles = allTitles.slice(0, 850);
     console.log("[LLM] 📋 Titres limités à:", limitedTitles.length);
-    if (allTitles.length > 150) {
+    if (allTitles.length > 850) {
       console.warn(
         `[LLM] ⚠️ ${
-          allTitles.length - 150
+          allTitles.length - 850
         } titres ignorés pour rester sous la limite de tokens`
       );
     }
@@ -198,37 +198,57 @@ export async function mapJobTitlesToDatabase(
     const prompt = `Tu es FOX, expert senior en classification de métiers tech avec 15 ans d'expérience dans l'analyse salariale et l'orientation de carrière. Tu maîtrises parfaitement les nuances entre métiers similaires, les évolutions de titres dans l'industrie, et les équivalences internationales.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 MISSION CRITIQUE
+🎯 MISSION CRITIQUE - MATCHING PRÉCIS DE MÉTIERS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Identifier TOUS les titres de poste correspondant sémantiquement à l'entrée utilisateur, en considérant TOUTES les variantes possibles (synonymes, langues, niveaux, abréviations).
+Identifier UNIQUEMENT les titres de poste qui correspondent RÉELLEMENT au même métier que l'entrée utilisateur. ÉVITE les matchs trop larges qui nuisent à la pertinence.
 
 📥 ENTRÉE UTILISATEUR : "${userInput}"
 
 📋 BASE DE DONNÉES (Titres disponibles) :
 ${limitedTitles.map((title, idx) => `${idx + 1}. ${title}`).join("\n")}
 
-⚙️ RÈGLES STRICTES :
+⚙️ RÈGLES STRICTES DE MATCHING :
 1. Retourne UNIQUEMENT des titres EXACTS présents dans la liste ci-dessus
-2. Considère TOUTES les variantes linguistiques (FR/EN/abréviations)
+2. Considère les variantes linguistiques et orthographiques du MÊME métier :
    • "dev" = "developer" = "développeur" = "software engineer"
+   • "Fullstack" = "Full Stack" = "Full-Stack"
 3. Gère les niveaux d'expérience intelligemment :
    • Si "senior/lead/principal" dans l'input → priorise ces titres
    • Si "junior/débutant" → priorise ces titres
    • Si pas de niveau spécifié → inclus TOUS les niveaux
-4. Comprends les équivalences métier :
-   • "Fullstack" = "Full Stack" = "Full-Stack"
-   • "DevOps" = "Dev Ops" = "SRE" (dans certains contextes)
-   • "Data Scientist" = "ML Engineer" (si contexte approprié)
-5. Gère les pluriels et variations orthographiques
-6. Si incertitude : préfère INCLURE plutôt qu'exclure
+
+🚨 RÈGLES D'EXCLUSION CRITIQUE (détail important !) :
+❌ NE MATCHE PAS des métiers différents même s'ils sont dans le même domaine par exemple :
+   • "CloudOps" ≠ "Administrateur Système" (responsabilités différentes)
+   • "CloudOps" ≠ "Architecte Infra" (niveau et scope différents)
+   • "DevOps" ≠ "SRE" (métiers distincts malgré similarités)
+   • "Data Scientist" ≠ "Data Engineer" (métiers très différents)
+   • "Backend Developer" ≠ "Full Stack Developer" (spécialisations différentes)
+   • "Mobile Developer" ≠ "Frontend Developer" (plateformes différentes)
+
+✅ MATCHE UNIQUEMENT :
+   • Variantes orthographiques EXACTES du même poste
+   • Traductions FR/EN du même poste
+   • Abréviations communes du même poste
+   • Niveaux différents du MÊME métier (si niveau non spécifié)
+
+📊 EXEMPLES DE MATCHING CORRECT :
+   Input: "CloudOps" → Match: "Cloud Ops", "Cloud Operations Engineer", "CloudOps Engineer"
+   Input: "CloudOps" → ❌ PAS: "Administrateur Système", "DevOps", "Architecte Infra"
+   
+   Input: "Data Scientist" → Match: "Data Scientist", "Scientist Data", "Senior Data Scientist"
+   Input: "Data Scientist" → ❌ PAS: "Data Engineer", "Data Analyst", "ML Engineer"
+   
+   Input: "Backend Developer" → Match: "Backend Developer", "Développeur Backend", "Backend Engineer"
+   Input: "Backend Developer" → ❌ PAS: "Full Stack Developer", "DevOps Engineer"
 
 🎯 FORMAT DE RÉPONSE (JSON STRICT - PAS D'AUTRE TEXTE) :
 {
   "matches": ["Titre Exact 1", "Titre Exact 2", "Titre Exact N"],
-  "reasoning": "Explication ultra-brève de ton matching (1 phrase max)"
+  "reasoning": "Explication ultra-brève de ton matching strict (1 phrase max)"
 }
 
-⚠️ IMPÉRATIF : Réponds UNIQUEMENT avec le JSON valide. Aucun markdown, aucun commentaire.`;
+⚠️ IMPÉRATIF : Réponds UNIQUEMENT avec le JSON valide. Aucun markdown, aucun commentaire. SOIS STRICT dans les correspondances pour éviter les faux positifs.`;
 
     const response = await callLLM(prompt);
 
@@ -263,7 +283,8 @@ ${limitedTitles.map((title, idx) => `${idx + 1}. ${title}`).join("\n")}
  * 2️⃣ Génère un résumé statistique en langage naturel
  */
 export async function generateStatsSummary(
-  stats: SalaryStatistics
+  stats: SalaryStatistics,
+  jobTitles?: string[]
 ): Promise<string> {
   if (!config.features.aiSummary) {
     return `Salaire moyen de ${Math.round(stats.mean)}€ sur ${
@@ -272,7 +293,15 @@ export async function generateStatsSummary(
   }
 
   try {
-    const prompt = `Tu es Fox, expert en salaires tech. Rédige un résumé ULTRA-CLAIR, organisé en POINTS COURTS, adapté mobile (pas de colonnes, pas de phrases trop longues).
+    // Préparer le contexte des titres
+    const titlesContext =
+      jobTitles && jobTitles.length > 0
+        ? `\n📋 POSTES CONCERNÉS : ${jobTitles.slice(0, 5).join(", ")}${
+            jobTitles.length > 5 ? ` et ${jobTitles.length - 5} autres` : ""
+          }`
+        : "";
+
+    const prompt = `Tu es Fox, expert en salaires tech. Rédige un résumé ULTRA-CLAIR, organisé en POINTS COURTS, adapté mobile (pas de colonnes, pas de phrases trop longues).${titlesContext}
 
 📊 DONNÉES (${stats.count} salaires analysés) :
 • Salaire médian (typique) : ${Math.round(stats.median)}€/an
@@ -299,6 +328,13 @@ ${
 }
 
 🎯 STRUCTURE OBLIGATOIRE (phrases courtes, claires, mobile-first) :
+${
+  jobTitles && jobTitles.length > 1
+    ? `0. Une phrase mentionnant les postes concernés (si plusieurs, cite "pour X, Y et Z" ou "pour X, Y et autres")`
+    : jobTitles && jobTitles.length === 1
+    ? `0. Une phrase mentionnant le poste concerné : "${jobTitles[0]}"`
+    : ""
+}
 1. Une phrase sur le salaire typique (médiane)
 2. Une phrase sur l'évolution junior → senior avec les moyennes
 3. Une phrase mentionnant le meilleur profil junior si disponible

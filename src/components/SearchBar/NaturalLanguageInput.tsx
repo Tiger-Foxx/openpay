@@ -50,11 +50,11 @@ export const NaturalLanguageInput = React.memo<NaturalLanguageInputProps>(
 
     return (
       <div className="w-full max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 flex items-center gap-4">
+        {/* Header avec Back Button */}
+        <div className="mb-4 flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors shrink-0"
             aria-label="Retour"
           >
             <svg
@@ -72,38 +72,35 @@ export const NaturalLanguageInput = React.memo<NaturalLanguageInputProps>(
               />
             </svg>
           </button>
-          <div className="flex-1">
+          <div>
             <h2 className="text-2xl font-bold">Décrire mon métier</h2>
-            <p className="text-gray-600 text-sm mt-1">
-              Expliquez ce que vous faites au quotidien, l'IA vous proposera le
-              métier correspondant
+            <p className="text-gray-600 text-sm mt-0.5">
+              Expliquez ce que vous faites, l'IA trouvera le métier
+              correspondant
             </p>
-
-            {/* Conseils de précision */}
-            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-xs text-blue-900 font-medium mb-1">
-                💡 Pour de meilleurs résultats, mentionnez :
-              </p>
-              <ul className="text-xs text-blue-800 space-y-1">
-                <li>
-                  • <span className="font-semibold">Niveau d'expérience</span> :
-                  Junior, Senior, Lead, Principal...
-                </li>
-                <li>
-                  • <span className="font-semibold">Technologies</span> : React,
-                  Python, AWS, Kubernetes...
-                </li>
-                <li>
-                  • <span className="font-semibold">Responsabilités</span> :
-                  Développement, architecture, management...
-                </li>
-                <li>
-                  • <span className="font-semibold">Domaine</span> : Backend,
-                  Frontend, Mobile, Data, DevOps...
-                </li>
-              </ul>
-            </div>
           </div>
+        </div>
+
+        {/* Conseils IA - Séparé du header */}
+        <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl shadow-soft">
+          <p className="text-sm text-green-900 font-semibold mb-2 flex items-center gap-2">
+            <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs font-bold">
+              Astuce
+            </span>
+            L'IA analyse votre description pour matcher avec les données
+          </p>
+          <p className="text-sm text-green-800 leading-relaxed">
+            Écrivez en langage naturel comme{" "}
+            <span className="font-semibold">
+              "je suis dev front end junior"
+            </span>
+            ,{" "}
+            <span className="font-semibold">
+              "développeur backend avec Python et 3 ans d'XP"
+            </span>
+            ... Pas besoin de chercher le titre exact, l'IA comprendra votre
+            profil !
+          </p>
         </div>
 
         {/* Form */}
@@ -112,17 +109,25 @@ export const NaturalLanguageInput = React.memo<NaturalLanguageInputProps>(
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Exemple précis : Je suis Senior Backend Developer avec 5 ans d'expérience. Je développe des API REST en Node.js et TypeScript, j'utilise PostgreSQL et Redis. Je manage une équipe de 3 développeurs juniors et je participe à l'architecture des nouveaux services..."
-              rows={6}
-              className="w-full px-6 py-4 border-2 border-black rounded-2xl focus:outline-none focus:ring-4 focus:ring-black/10 transition-all duration-200 bg-white resize-none shadow-soft"
+              placeholder="Exemple : Je développe des API REST en Node.js et TypeScript, j'utilise PostgreSQL et Redis. Je manage une équipe de 3 développeurs juniors et je participe à l'architecture des nouveaux services..."
+              rows={8}
+              className="w-full px-5 py-4 border-2 border-gray-300 rounded-2xl focus:outline-none focus:border-black focus:ring-4 focus:ring-black/5 transition-all duration-300 bg-white/80 backdrop-blur-sm resize-none shadow-medium hover:shadow-large text-base leading-relaxed"
               aria-label="Description de votre métier"
             />
-            {/* Compteur de caractères */}
-            <div className="absolute bottom-3 right-3 text-xs text-gray-400">
-              {description.length} caractères{" "}
-              {description.length < 50 &&
-                description.length > 0 &&
-                "• Ajoutez plus de détails"}
+            {/* Compteur de caractères - Amélioré */}
+            <div className="absolute bottom-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm border border-gray-200">
+              <span
+                className={`text-xs font-medium ${
+                  description.length >= 50 ? "text-green-600" : "text-gray-500"
+                }`}
+              >
+                {description.length} caractères
+              </span>
+              {description.length > 0 && description.length < 50 && (
+                <span className="text-xs text-orange-500 ml-2">
+                  • Ajoutez plus de détails
+                </span>
+              )}
             </div>
           </div>
 

@@ -16,6 +16,33 @@ export const SearchBarMobile = React.memo<SearchBarMobileProps>(
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+    const placeholders = [
+      "Senior Backend Developer",
+      "Lead Frontend Engineer React",
+      "DevOps Engineer AWS",
+      "Data Engineer Python",
+      "Full Stack Developer Node.js",
+      "Tech Lead",
+      "Cloud Architect",
+      "Machine Learning Engineer",
+    ];
+
+    const quickExamples = [
+      "Développeur React",
+      "DevOps",
+      "Data Scientist",
+      "Backend Node.js",
+    ];
+
+    // Rotation du placeholder
+    React.useEffect(() => {
+      const interval = setInterval(() => {
+        setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }, [placeholders.length]);
 
     const handleInputChange = async (value: string) => {
       setQuery(value);
@@ -81,13 +108,13 @@ export const SearchBarMobile = React.memo<SearchBarMobileProps>(
           size="full"
           showCloseButton={false}
         >
-          <div className="min-h-screen bg-white p-4">
+          <div className="bg-white p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold">Rechercher un métier</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
                 aria-label="Fermer"
               >
                 <svg
@@ -108,15 +135,15 @@ export const SearchBarMobile = React.memo<SearchBarMobileProps>(
             </div>
 
             {/* Search Form */}
-            <form onSubmit={handleSubmit} className="mb-6">
+            <form onSubmit={handleSubmit} className="mb-4">
               <div className="relative">
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => handleInputChange(e.target.value)}
-                  placeholder="Ex: Développeur React, DevOps..."
+                  placeholder={placeholders[placeholderIndex]}
                   autoFocus
-                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all duration-300"
                 />
                 {isLoading && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -143,7 +170,41 @@ export const SearchBarMobile = React.memo<SearchBarMobileProps>(
                   </div>
                 )}
               </div>
+
+              {/* Helper text avec IA */}
+              <div className="mt-3 px-1">
+                <p className="text-xs text-gray-700 mb-1">
+                  <span className="bg-green-100 text-green-800 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                    Astuce
+                  </span>{" "}
+                  L'IA analyse votre recherche
+                </p>
+                <p className="text-[11px] text-gray-500 leading-relaxed">
+                  Tapez en langage naturel : "je suis dev front end junior",
+                  "backend Python"... Ne vous souciez pas des suggestions !
+                </p>
+              </div>
             </form>
+
+            {/* Quick Examples */}
+            {query.length === 0 && (
+              <div className="mb-6">
+                <p className="text-sm text-gray-600 font-medium mb-3">
+                  Recherches populaires
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {quickExamples.map((example, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSelectSuggestion(example)}
+                      className="px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-sm font-medium text-gray-900 active:scale-95 transition-all"
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Suggestions */}
             {suggestions.length > 0 && (

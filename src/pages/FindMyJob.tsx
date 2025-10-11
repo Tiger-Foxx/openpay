@@ -8,6 +8,10 @@ import { UserSkills, JobMatchResult } from "@/models/jobMatch";
 import { findMatchingJobs } from "@/services/jobMatcher";
 import { formatSalary } from "@/utils/dataFormatter";
 import { Collapse } from "@/components/UI/Collapse";
+import { Sparkles, Briefcase } from "lucide-react";
+import Lottie from "lottie-react";
+import foxZenAnimation from "@/assets/lotties/fox-zen.json";
+import workBalanceAnimation from "@/assets/lotties/Work and life balance.json";
 
 export const FindMyJob = React.memo(() => {
   const [formData, setFormData] = useState<UserSkills>({
@@ -93,17 +97,32 @@ export const FindMyJob = React.memo(() => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-black mb-4">
-          Trouver Quel Métier Je Peux Faire
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Décrivez vos compétences et votre formation. L'IA vous proposera les
-          métiers tech les plus adaptés avec leur salaire moyen et les
-          compétences à acquérir.
-        </p>
+    <div className="max-w-5xl mx-auto space-y-8 pb-12">
+      {/* Header avec Lottie */}
+      <div className="grid md:grid-cols-2 gap-8 items-center">
+        {/* Left: Lottie Animation */}
+        <div className="flex justify-center md:block order-2 md:order-1">
+          <Lottie
+            animationData={workBalanceAnimation}
+            loop={true}
+            className="w-full max-w-[250px] md:max-w-sm mx-auto drop-shadow-2xl"
+          />
+        </div>
+
+        {/* Right: Text */}
+        <div className="text-center md:text-left order-1 md:order-2">
+          <div className="flex items-center gap-3 justify-center md:justify-start mb-4">
+            <Briefcase className="h-7 w-7 sm:h-8 sm:w-8 text-gray-900 shrink-0" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
+              Trouver Quel Métier Je Peux Faire
+            </h1>
+          </div>
+          <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto md:mx-0">
+            Décrivez vos compétences et votre formation. L'IA vous proposera les
+            métiers tech les plus adaptés avec leur salaire moyen et les
+            compétences à acquérir.
+          </p>
+        </div>
       </div>
 
       {/* Form */}
@@ -116,13 +135,16 @@ export const FindMyJob = React.memo(() => {
                 Technologies & Compétences{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <p className="text-xs text-gray-500 mb-3">
-                💡 Soyez précis : mentionnez les frameworks (React, Vue,
-                Angular), les langages (Python, Java, TypeScript), les outils
-                (Docker, Kubernetes, AWS), et les compétences métier
-                (Architecture, Management, Agile)
+              <p className="text-xs text-gray-600 mb-3">
+                <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded font-semibold text-[11px]">
+                  Astuce
+                </span>{" "}
+                Mentionnez les frameworks (React, Vue, Angular), les langages
+                (Python, Java, TypeScript), les outils (Docker, Kubernetes,
+                AWS), et les compétences métier (Architecture, Management,
+                Agile)
               </p>
-              <div className="flex gap-2 mb-3">
+              <div className="flex flex-col sm:flex-row gap-2 mb-3">
                 <input
                   type="text"
                   value={techInput}
@@ -133,13 +155,14 @@ export const FindMyJob = React.memo(() => {
                       handleAddTech();
                     }
                   }}
-                  placeholder="Ex: React, TypeScript, REST API, PostgreSQL, AWS, Git..."
-                  className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+                  placeholder="Ex: React, TypeScript, REST API..."
+                  className="flex-1 min-w-0 px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
                 />
                 <Button
                   type="button"
                   onClick={handleAddTech}
                   variant="secondary"
+                  className="w-full sm:w-auto"
                 >
                   Ajouter
                 </Button>
@@ -208,8 +231,11 @@ export const FindMyJob = React.memo(() => {
               >
                 Formation <span className="text-red-500">*</span>
               </label>
-              <p className="text-xs text-gray-500 mb-2">
-                💡 Précisez le niveau (Bac+2, Bac+3, Bac+5...), la spécialité
+              <p className="text-xs text-gray-600 mb-2">
+                <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded font-semibold text-[11px]">
+                  Astuce
+                </span>{" "}
+                Précisez le niveau (Bac+2, Bac+3, Bac+5...), la spécialité
                 (Informatique, Data, Réseau...) et le type de diplôme (Master,
                 Licence, DUT, École d'ingénieur, Bootcamp...)
               </p>
@@ -292,15 +318,32 @@ export const FindMyJob = React.memo(() => {
         </Card>
       )}
 
-      {/* Results */}
+      {/* Results avec Lottie fox-zen */}
       {results.length > 0 && (
         <div className="space-y-6">
-          {/* Header Results */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-black">
-              {results.length} Métier{results.length > 1 ? "s" : ""}{" "}
-              Correspondant{results.length > 1 ? "s" : ""}
-            </h2>
+          {/* Header Results avec Lottie */}
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16">
+                <Lottie
+                  animationData={foxZenAnimation}
+                  loop={true}
+                  className="w-full h-full drop-shadow-lg"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles className="h-5 w-5 text-yellow-500" />
+                  <h2 className="text-2xl font-bold text-black">
+                    {results.length} Métier{results.length > 1 ? "s" : ""}{" "}
+                    Correspondant{results.length > 1 ? "s" : ""}
+                  </h2>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Analyse terminée avec succès
+                </p>
+              </div>
+            </div>
             <Button variant="secondary" onClick={handleReset}>
               Nouvelle Analyse
             </Button>

@@ -14,8 +14,8 @@ export const Layout = React.memo<LayoutProps>(({ children }) => {
       {/* Header ultra-fin */}
       <Header />
 
-      {/* Main Content — padding-top ajusté pour header de 56px */}
-      <main className="flex-1 pt-14">
+      {/* Main Content — padding-top ajusté pour header + espace */}
+      <main className="flex-1 pt-20 md:pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">{children}</div>
       </main>
 

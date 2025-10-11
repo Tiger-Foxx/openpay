@@ -12,9 +12,10 @@ export const config = {
     cacheDuration: 1000 * 60 * 30, // 30 minutes
   },
 
-  // LLM Configuration (Gemini)
+  // LLM Configuration (Gemini) avec fallback pour quotas
   llm: {
     apiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
+    apiKeyFallback: import.meta.env.VITE_GEMINI_API_KEY_2 || "",
     model: "gemini-2.5-flash", // Nouveau modèle rapide avec @google/genai
     maxTokens: 33048,
     temperature: 0.3, // Plus bas = plus déterministe
@@ -61,7 +62,7 @@ export const config = {
     tagline: "Salaires Tech en toute transparence",
     version: "1.0.0",
     author: "Fox",
-    repository: "https://github.com/theTigerFox/openpay",
+    repository: "https://github.com/Tiger-Foxx/openpay",
   },
 
   // Roadmap.sh links - Comprehensive list for AI recommendations
