@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import type { SalaryStatistics } from "@/models/statistics";
-import type { CleanedSalary } from "@/models/salary";
+import { SalaryStatistics } from "@/models/statistics";
+import { CleanedSalary } from "@/models/salary";
 import { formatSalary, formatDate, formatRemote } from "./dataFormatter";
 
 /**

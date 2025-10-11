@@ -13,9 +13,11 @@ export interface JobMatchResult {
   jobTitle: string;
   compatibilityScore: number; // 0-100
   averageSalary: number;
-  missingSkills: string[]; // Compétences manquantes
-  learningResources?: string[]; // Liens/roadmaps (optionnel)
   matchedSkills: string[]; // Compétences correspondantes
+  missingSkills: string[]; // Compétences manquantes
+  recommendedRoadmaps?: string[]; // URLs roadmap.sh recommandées par l'IA
+  reasoning?: string; // Justification courte de la recommandation
+  learningResources?: string[]; // DEPRECATED - utiliser recommendedRoadmaps
 }
 
 export interface JobMatcherResponse {

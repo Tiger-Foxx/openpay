@@ -1,4 +1,4 @@
-import type { Salary, CleanedSalary } from "@/models/salary";
+import { Salary, CleanedSalary } from "@/models/salary";
 
 /**
  * Nettoie et valide les données de salaires

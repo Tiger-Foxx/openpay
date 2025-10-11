@@ -1,5 +1,5 @@
-import type { CleanedSalary } from "@/models/salary";
-import type {
+import { CleanedSalary } from "@/models/salary";
+import {
   SalaryStatistics,
   ExperienceBreakdownItem,
   RemoteBreakdownItem,
