@@ -5,22 +5,38 @@ import { Salary, CleanedSalary } from "@/models/salary";
  */
 
 /**
- * Filtre les salaires invalides
+ * Filtre les salaires invalides en tenant compte de la devise
+ * - Cameroun (FCFA) : salaires en millions (1M - 100M FCFA ≈ 1.5k - 150k EUR)
+ * - France/Autre (EUR) : salaires en milliers (15k - 500k EUR)
  */
 export function filterValidSalaries(salaries: Salary[]): Salary[] {
   return salaries.filter((salary) => {
-    // Compensation doit être > 0 et réaliste (entre 15k et 500k)
-    if (
-      !salary.compensation ||
-      salary.compensation < 1500 ||
-      salary.compensation > 500000
-    ) {
-      return false;
-    }
-
     // Company et location obligatoires
     if (!salary.company || !salary.location) {
       return false;
+    }
+
+    // Validation du salaire selon le pays/devise
+    if (!salary.compensation || salary.compensation <= 0) {
+      return false;
+    }
+
+    const country = salary.country || "France";
+    
+    // Pour le Cameroun (FCFA) : accepter les montants entre 1M et 100M FCFA
+    if (country === "Cameroun") {
+      // Salaire typique au Cameroun : 3M - 50M FCFA (junior à senior)
+      // On accepte 1M - 100M pour être tolérant avec les très hauts salaires
+      if (salary.compensation < 100000 || salary.compensation > 1000000000) {
+        console.warn(`[DataCleanup] Salaire Cameroun hors limites rejeté: ${salary.compensation} FCFA`);
+        return false;
+      }
+    } else {
+      // Pour France/Autre (EUR) : accepter les montants entre 15k et 500k EUR
+      if (salary.compensation < 15000 || salary.compensation > 500000) {
+        console.warn(`[DataCleanup] Salaire EUR hors limites rejeté: ${salary.compensation}€`);
+        return false;
+      }
     }
 
     return true;

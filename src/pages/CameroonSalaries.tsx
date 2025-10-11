@@ -99,7 +99,7 @@ export const CameroonSalaries = React.memo(() => {
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-8 pb-12 mt-14">
       {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl sm:text-4xl font-bold text-black mb-4">

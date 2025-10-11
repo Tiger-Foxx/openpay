@@ -345,10 +345,13 @@ ${limitedTitles.map((title, idx) => `${idx + 1}. ${title}`).join("\n")}
 
 /**
  * 2️⃣ Génère un résumé statistique en langage naturel
+ * Maintenant avec support de stats séparées Cameroun vs Autres pays
  */
 export async function generateStatsSummary(
   stats: SalaryStatistics,
-  jobTitles?: string[]
+  jobTitles?: string[],
+  statsCameroon?: SalaryStatistics,
+  statsOther?: SalaryStatistics
 ): Promise<string> {
   if (!config.features.aiSummary) {
     return `Salaire moyen de ${Math.round(stats.mean)}€ sur ${
@@ -371,31 +374,59 @@ export async function generateStatsSummary(
           }`
         : "";
 
+    // Construire les sections de stats par pays si disponibles
+    const cameroonStatsSection = statsCameroon ? `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🇨🇲 DONNÉES CAMEROUN (${statsCameroon.count} salaires en FCFA) :
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Salaire médian : ${Math.round(statsCameroon.median).toLocaleString()} FCFA/an
+• Fourchette : ${Math.round(statsCameroon.min).toLocaleString()} → ${Math.round(statsCameroon.max).toLocaleString()} FCFA
+• Juniors (0-2 ans) : ${Math.round(statsCameroon.leastExperiencedAvg).toLocaleString()} FCFA
+• Seniors (10+ ans) : ${Math.round(statsCameroon.mostExperiencedAvg).toLocaleString()} FCFA
+${statsCameroon.juniorMaxSalary ? `• 🏆 Meilleur junior CM : ${Math.round(statsCameroon.juniorMaxSalary).toLocaleString()} FCFA - ${statsCameroon.juniorMaxDetails}` : ""}
+${statsCameroon.seniorMaxSalary ? `• 🏆 Meilleur senior CM : ${Math.round(statsCameroon.seniorMaxSalary).toLocaleString()} FCFA - ${statsCameroon.seniorMaxDetails}` : ""}
+` : "";
+
+    const otherStatsSection = statsOther ? `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🇫🇷 DONNÉES FRANCE/EUROPE (${statsOther.count} salaires en EUR) :
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Salaire médian : ${Math.round(statsOther.median).toLocaleString()}€/an
+• Fourchette : ${Math.round(statsOther.min).toLocaleString()}€ → ${Math.round(statsOther.max).toLocaleString()}€
+• Juniors (0-2 ans) : ${Math.round(statsOther.leastExperiencedAvg).toLocaleString()}€
+• Seniors (10+ ans) : ${Math.round(statsOther.mostExperiencedAvg).toLocaleString()}€
+${statsOther.juniorMaxSalary ? `• 🏆 Meilleur junior EU : ${Math.round(statsOther.juniorMaxSalary).toLocaleString()}€ - ${statsOther.juniorMaxDetails}` : ""}
+${statsOther.seniorMaxSalary ? `• 🏆 Meilleur senior EU : ${Math.round(statsOther.seniorMaxSalary).toLocaleString()}€ - ${statsOther.seniorMaxDetails}` : ""}
+` : "";
+
     const prompt = `Tu es Fox, expert en salaires tech. Rédige un résumé ULTRA-CLAIR, organisé en POINTS COURTS, adapté mobile (pas de colonnes, pas de phrases trop longues).${titlesContext}
 
-📊 DONNÉES (${stats.count} salaires analysés) :
-• Salaire médian (typique) : ${Math.round(stats.median)}€/an
-• Fourchette globale : ${Math.round(stats.min)}€ → ${Math.round(stats.max)}€
-• 50% gagnent PLUS de ${Math.round(stats.quartiles.median)}€
-• 25% gagnent MOINS de ${Math.round(stats.quartiles.q1)}€
+📊 DONNÉES GLOBALES (${stats.count} salaires analysés) :
+• Salaire médian (typique) : ${Math.round(stats.median).toLocaleString()}€/an
+• Fourchette globale : ${Math.round(stats.min).toLocaleString()}€ → ${Math.round(stats.max).toLocaleString()}€
+• 50% gagnent PLUS de ${Math.round(stats.quartiles.median).toLocaleString()}€
+• 25% gagnent MOINS de ${Math.round(stats.quartiles.q1).toLocaleString()}€
 
-💼 ÉVOLUTION AVEC L'EXPÉRIENCE :
-• Juniors (0-2 ans) : ${Math.round(stats.leastExperiencedAvg)}€ en moyenne
+💼 ÉVOLUTION AVEC L'EXPÉRIENCE (global) :
+• Juniors (0-2 ans) : ${Math.round(stats.leastExperiencedAvg).toLocaleString()}€ en moyenne
 ${
   stats.juniorMaxSalary
-    ? `• 🏆 Meilleur junior : ${Math.round(stats.juniorMaxSalary)}€ - ${
+    ? `• 🏆 Meilleur junior : ${Math.round(stats.juniorMaxSalary).toLocaleString()}€ - ${
         stats.juniorMaxDetails
       }`
     : ""
 }
-• Seniors (10+ ans) : ${Math.round(stats.mostExperiencedAvg)}€ en moyenne
+• Seniors (10+ ans) : ${Math.round(stats.mostExperiencedAvg).toLocaleString()}€ en moyenne
 ${
   stats.seniorMaxSalary
-    ? `• 🏆 Meilleur senior : ${Math.round(stats.seniorMaxSalary)}€ - ${
+    ? `• 🏆 Meilleur senior : ${Math.round(stats.seniorMaxSalary).toLocaleString()}€ - ${
         stats.seniorMaxDetails
       }`
     : ""
 }
+${cameroonStatsSection}${otherStatsSection}
 
 🎯 STRUCTURE OBLIGATOIRE (phrases courtes, claires, mobile-first) :
 ${
@@ -418,14 +449,22 @@ ${
 • TON conversationnel et encourageant
 • MOBILE-FIRST : pas de mise en page complexe, juste des phrases qui se lisent facilement
 
+🌍 STATS PAR PAYS (IMPORTANT) :
+${statsCameroon ? `• SI des stats Cameroun sont disponibles : ajoute 2-3 phrases SPÉCIFIQUES sur les salaires au Cameroun en FCFA (médiane, junior, senior)
+• Exemple : "Au Cameroun, le salaire médian est de 18M FCFA. Un junior démarre à 8M FCFA, un senior atteint 35M FCFA."` : ""}
+${statsOther ? `• SI des stats France/Europe sont disponibles : détaille également ces stats en EUR séparément
+• Compare brièvement les deux marchés si les deux sont présents` : ""}
+• TOUJOURS mentionner la devise (FCFA ou €) pour éviter toute confusion
+
 ❌ INTERDICTIONS :
 • Markdown, JSON, titres
 • Phrases de plus de 25 mots
 • Formulations techniques ou corporate
 • Oublier de mentionner les meilleurs profils junior/senior
+• Mélanger FCFA et EUR dans la même phrase sans préciser
 
-✅ EXEMPLE (ton attendu) :
-"Pour DevOps, Devops Engineer ou Ingénieur DevOps, le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud ! Plus bas, des roadmaps de formation vous attendent pour progresser."
+✅ EXEMPLE (ton attendu avec stats séparées) :
+"Pour DevOps Engineer, le salaire global médian est de 50k€. Au Cameroun, la médiane est de 18M FCFA avec des juniors à 8M et des seniors à 35M FCFA. En France et Europe, la médiane est de 52k€. Les juniors européens démarrent à 38k€ et les seniors atteignent 70k€. Le meilleur junior camerounais gagne 12M FCFA chez Orange à Douala. Le meilleur senior européen atteint 120k€ chez Google à Paris. Pour viser le haut, spécialise-toi en cloud et DevOps ! Plus bas, des roadmaps de formation vous attendent."
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🗺️ ROADMAPS DISPONIBLES (roadmap.sh) - LISTE COMPLÈTE

@@ -76,12 +76,24 @@ export const Results = React.memo(() => {
 
         setMatchedSalaries(filtered);
 
-        // 4. Calculer les statistiques
+        // 4. Calculer les statistiques (globales et par pays)
         const statistics = calculateStatistics(filtered);
         setStats(statistics);
 
-        // 5. Générer résumé IA avec les titres de postes
-        const summary = await generateStatsSummary(statistics, mappedTitles);
+        // Séparer les salaires par pays et calculer les stats séparées si suffisamment de données
+        const cameroonSalaries = filtered.filter(s => s.country === "Cameroun");
+        const otherSalaries = filtered.filter(s => s.country !== "Cameroun");
+
+        // 5. Générer résumé IA avec les titres de postes ET les stats séparées
+        const camStats = cameroonSalaries.length >= 3 ? calculateStatistics(cameroonSalaries) : undefined;
+        const othStats = otherSalaries.length >= 3 ? calculateStatistics(otherSalaries) : undefined;
+        
+        const summary = await generateStatsSummary(
+          statistics, 
+          mappedTitles,
+          camStats,
+          othStats
+        );
         setAiSummary(summary);
 
         // 6. Recommander des roadmaps pour ce métier
