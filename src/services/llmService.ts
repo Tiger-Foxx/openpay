@@ -419,9 +419,11 @@ ${
 • Oublier de mentionner les meilleurs profils junior/senior
 
 ✅ EXEMPLE (ton attendu) :
-"Pour DevOps, Devops Engineer ou Ingénieur DevOps, le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud !"
+"Pour DevOps, Devops Engineer ou Ingénieur DevOps, le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud ! Plus bas, des roadmaps de formation vous attendent pour progresser."
 
-⚠️ IMPORTANT : Utilise "OU" entre les postes (DevOps, Devops OU Ingénieur DevOps), JAMAIS "ET" !
+⚠️ IMPORTANT : 
+• Utilise "OU" entre les postes (DevOps, Devops OU Ingénieur DevOps), JAMAIS "ET" !
+• Termine TOUJOURS par une phrase mentionnant les roadmaps disponibles plus bas (variantes possibles : "Des roadmaps de formation sont disponibles ci-dessous", "Plus bas, retrouvez des parcours de formation", "Consultez les roadmaps recommandées en dessous")
 
 Réponds UNIQUEMENT avec le texte du résumé :`;
 
@@ -633,6 +635,82 @@ ${availableRoadmaps}
     }
   } catch (error) {
     console.error("[LLM] Erreur matchJobsBySkills:", error);
+    return [];
+  }
+}
+
+/**
+ * 5️⃣ Recommande des roadmaps pertinentes pour un métier donné
+ * Utilisé dans les pages de résultats de salaires
+ */
+export async function recommendRoadmapsForJob(
+  jobTitles: string[]
+): Promise<string[]> {
+  if (!config.features.naturalLanguageSearch || jobTitles.length === 0) {
+    return [];
+  }
+
+  try {
+    // Préparer la liste des roadmaps disponibles
+    const availableRoadmaps = [
+      ...config.roadmaps.roles.map((r) => `${r.name} (${r.url})`),
+      ...config.roadmaps.skills.map((s) => `${s.name} (${s.url})`),
+    ].join("\n");
+
+    const jobTitlesText =
+      jobTitles.length === 1 ? jobTitles[0] : jobTitles.slice(0, 3).join(", ");
+
+    const prompt = `Tu es FOX, expert en orientation de carrière tech. Recommande 3 à 5 roadmaps roadmap.sh pertinentes pour quelqu'un qui vise le(s) métier(s) suivant(s) : ${jobTitlesText}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🗺️ ROADMAPS DISPONIBLES (roadmap.sh)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${availableRoadmaps}
+
+🎯 TA MISSION :
+1. Identifier les roadmaps les PLUS pertinentes pour ce(s) métier(s)
+2. Prioriser les roadmaps essentielles (fondamentales > avancées)
+3. Limiter à 3-5 roadmaps maximum (pas de surcharge)
+4. Inclure UNIQUEMENT des URLs de la liste ci-dessus
+
+⚙️ RÈGLES STRICTES :
+• Roadmaps par ordre de priorité (essentielles en premier)
+• URLs EXACTES issues de la liste fournie
+• Minimum 3, maximum 5 roadmaps
+• Pertinence maximale pour le(s) métier(s) cité(s)
+
+📋 EXEMPLES :
+• Pour "DevOps Engineer" → ["https://roadmap.sh/devops", "https://roadmap.sh/docker", "https://roadmap.sh/kubernetes", "https://roadmap.sh/linux"]
+• Pour "React Developer" → ["https://roadmap.sh/react", "https://roadmap.sh/frontend", "https://roadmap.sh/javascript", "https://roadmap.sh/typescript"]
+• Pour "Backend Developer" → ["https://roadmap.sh/backend", "https://roadmap.sh/nodejs", "https://roadmap.sh/postgresql-dba", "https://roadmap.sh/system-design"]
+
+🎯 FORMAT DE RÉPONSE (JSON STRICT) :
+{
+  "roadmaps": [
+    "https://roadmap.sh/...",
+    "https://roadmap.sh/...",
+    "https://roadmap.sh/..."
+  ]
+}
+
+⚠️ IMPÉRATIF : Réponds UNIQUEMENT avec du JSON valide, aucun markdown, aucun texte additionnel.`;
+
+    const response = await callLLM(prompt);
+
+    try {
+      const parsed = parseJSONFromLLM(response);
+      const roadmaps = (parsed.roadmaps as string[]) || [];
+
+      // Valider que ce sont des URLs roadmap.sh valides
+      return roadmaps.filter(
+        (url) => url.startsWith("https://roadmap.sh/") && url.length > 20
+      );
+    } catch (parseError) {
+      console.error("[LLM] Erreur recommendRoadmapsForJob:", parseError);
+      return [];
+    }
+  } catch (error) {
+    console.error("[LLM] Erreur recommendRoadmapsForJob:", error);
     return [];
   }
 }

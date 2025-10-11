@@ -112,7 +112,6 @@ export const FindMyJob = React.memo(() => {
         {/* Right: Text */}
         <div className="text-center md:text-left order-1 md:order-2">
           <div className="flex items-center gap-3 justify-center md:justify-start mb-4">
-            <Briefcase className="h-7 w-7 sm:h-8 sm:w-8 text-gray-900 shrink-0" />
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
               Trouver Quel Métier Je Peux Faire
             </h1>

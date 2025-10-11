@@ -9,7 +9,10 @@ import { mapJobTitlesToDatabase } from "@/services/llmService";
 import { filterSalaries } from "@/services/salariesApi";
 import { getUniqueTitles } from "@/services/salariesApi";
 import { calculateStatistics } from "@/utils/statsCalculator";
-import { generateStatsSummary } from "@/services/llmService";
+import {
+  generateStatsSummary,
+  recommendRoadmapsForJob,
+} from "@/services/llmService";
 import { Loader } from "@/components/UI/Loader";
 import { Button } from "@/components/UI/Button";
 import { StatsOverview } from "@/components/Stats/StatsOverview";
@@ -31,6 +34,7 @@ export const ResultsMobile = React.memo(() => {
   const [matchedSalaries, setMatchedSalaries] = useState<CleanedSalary[]>([]);
   const [stats, setStats] = useState<SalaryStatistics | null>(null);
   const [aiSummary, setAiSummary] = useState<string>("");
+  const [recommendedRoadmaps, setRecommendedRoadmaps] = useState<string[]>([]);
   const [showAllCharts, setShowAllCharts] = useState(false);
 
   useEffect(() => {
@@ -71,6 +75,9 @@ export const ResultsMobile = React.memo(() => {
 
         const summary = await generateStatsSummary(statistics, mappedTitles);
         setAiSummary(summary);
+
+        const roadmaps = await recommendRoadmapsForJob(mappedTitles);
+        setRecommendedRoadmaps(roadmaps);
       } catch (err) {
         console.error("[ResultsMobile] Erreur:", err);
         setError("Une erreur est survenue.");
@@ -212,8 +219,58 @@ export const ResultsMobile = React.memo(() => {
                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               />
             </svg>
-            📊 Voir plus de graphiques
+            Voir plus de graphiques
           </Button>
+        </div>
+      )}
+
+      {/* Roadmaps Recommandées Mobile */}
+      {recommendedRoadmaps.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200">
+          <h3 className="text-base font-bold text-black mb-2 flex items-center gap-2">
+            🗺️ Roadmaps Recommandées
+          </h3>
+          <p className="text-xs text-gray-700 mb-3">
+            Parcours de formation sélectionnés par l'IA
+          </p>
+          <div className="space-y-2">
+            {recommendedRoadmaps.map((url, index) => {
+              const roadmapName =
+                url
+                  .split("/")
+                  .pop()
+                  ?.split("-")
+                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                  .join(" ") || `Roadmap ${index + 1}`;
+              return (
+                <a
+                  key={index}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-3 py-2 bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg active:bg-blue-50 transition-all"
+                >
+                  <span className="text-sm font-semibold text-gray-900">
+                    {roadmapName}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 text-gray-400 shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </a>
+              );
+            })}
+          </div>
         </div>
       )}
 

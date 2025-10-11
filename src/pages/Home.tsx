@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar/SearchBar";
 import { NaturalLanguageInput } from "@/components/SearchBar/NaturalLanguageInput";
 import { AnimatedBackground } from "@/components/UI/AnimatedBackground";
-import { Search, Plus, Globe } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import Lottie from "lottie-react";
 import logoFox from "@/assets/logos/logo-fox-dark.png";
 import developerAnimation from "@/assets/lotties/Developer.json";
@@ -126,11 +126,23 @@ export const Home = React.memo(() => {
 
           <button
             onClick={() => navigate("/cameroon")}
-            className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white border-2 border-green-700 rounded-2xl font-semibold hover:from-green-700 hover:to-emerald-700 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center gap-3 overflow-hidden"
+            className="group relative px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl font-medium hover:from-green-100 hover:to-emerald-100 hover:text-green-800 transition-all duration-200 active:scale-98 flex items-center gap-2"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-            <Globe className="h-6 w-6 relative z-10" />
-            <span className="relative z-10">Salaires Cameroun 🇨🇲</span>
+            <span className="text-sm">Salaires Cameroun 🇨🇲</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </button>
         </div>
 

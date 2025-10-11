@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { SearchBarMobile } from "@/components/SearchBar/SearchBarMobile";
 import { NaturalLanguageInput } from "@/components/SearchBar/NaturalLanguageInput";
 import { AnimatedBackground } from "@/components/UI/AnimatedBackground";
-import { Search, Plus, Globe, ChevronRight } from "lucide-react";
+import { Search, Plus, ChevronRight } from "lucide-react";
 import Lottie from "lottie-react";
 import logoFox from "@/assets/logos/logo-fox-dark.png";
 import developerAnimation from "@/assets/lotties/Developer.json";
@@ -114,14 +114,10 @@ export const HomeMobile = React.memo(() => {
 
             <button
               onClick={() => navigate("/cameroon")}
-              className="group w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white border-2 border-green-700 rounded-2xl font-semibold hover:from-green-700 hover:to-emerald-700 hover:shadow-large transition-all duration-300 active:scale-95 flex items-center justify-between min-h-[64px] overflow-hidden relative"
+              className="group w-full px-5 py-3 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl font-medium hover:from-green-100 hover:to-emerald-100 active:bg-green-100 transition-all duration-200 flex items-center justify-between"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              <div className="flex items-center gap-3 relative z-10">
-                <Globe className="h-5 w-5" />
-                <span>Cameroun 🇨🇲</span>
-              </div>
-              <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform relative z-10" />
+              <span className="text-sm">Salaires Cameroun 🇨🇲</span>
+              <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
         )}

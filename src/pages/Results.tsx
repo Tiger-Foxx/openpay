@@ -9,7 +9,10 @@ import { mapJobTitlesToDatabase } from "@/services/llmService";
 import { filterSalaries } from "@/services/salariesApi";
 import { getUniqueTitles } from "@/services/salariesApi";
 import { calculateStatistics } from "@/utils/statsCalculator";
-import { generateStatsSummary } from "@/services/llmService";
+import {
+  generateStatsSummary,
+  recommendRoadmapsForJob,
+} from "@/services/llmService";
 import { Loader } from "@/components/UI/Loader";
 import { Button } from "@/components/UI/Button";
 import { StatsOverview } from "@/components/Stats/StatsOverview";
@@ -31,6 +34,7 @@ export const Results = React.memo(() => {
   const [matchedSalaries, setMatchedSalaries] = useState<CleanedSalary[]>([]);
   const [stats, setStats] = useState<SalaryStatistics | null>(null);
   const [aiSummary, setAiSummary] = useState<string>("");
+  const [recommendedRoadmaps, setRecommendedRoadmaps] = useState<string[]>([]);
   const [showAllCharts, setShowAllCharts] = useState(false);
 
   useEffect(() => {
@@ -79,6 +83,10 @@ export const Results = React.memo(() => {
         // 5. Générer résumé IA avec les titres de postes
         const summary = await generateStatsSummary(statistics, mappedTitles);
         setAiSummary(summary);
+
+        // 6. Recommander des roadmaps pour ce métier
+        const roadmaps = await recommendRoadmapsForJob(mappedTitles);
+        setRecommendedRoadmaps(roadmaps);
       } catch (err) {
         console.error("[Results] Erreur:", err);
         setError("Une erreur est survenue lors du chargement des données.");
@@ -221,8 +229,59 @@ export const Results = React.memo(() => {
                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               />
             </svg>
-            📊 Voir plus de graphiques détaillés
+            Voir plus de graphiques détaillés
           </Button>
+        </div>
+      )}
+
+      {/* Roadmaps Recommandées */}
+      {recommendedRoadmaps.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border-2 border-blue-200">
+          <h3 className="text-xl font-bold text-black mb-3 flex items-center gap-2">
+            🗺️ Roadmaps de Formation Recommandées
+          </h3>
+          <p className="text-sm text-gray-700 mb-4">
+            Progressez dans votre carrière avec ces parcours de formation
+            sélectionnés par l'IA
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {recommendedRoadmaps.map((url, index) => {
+              const roadmapName =
+                url
+                  .split("/")
+                  .pop()
+                  ?.split("-")
+                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                  .join(" ") || `Roadmap ${index + 1}`;
+              return (
+                <a
+                  key={index}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-4 py-3 bg-white hover:bg-blue-50 border-2 border-blue-200 hover:border-blue-400 rounded-xl transition-all hover:shadow-md group"
+                >
+                  <span className="font-semibold text-gray-900 group-hover:text-blue-700">
+                    {roadmapName}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </a>
+              );
+            })}
+          </div>
         </div>
       )}
 
