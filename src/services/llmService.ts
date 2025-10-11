@@ -11,30 +11,44 @@ import { config } from "@/config";
  * - Génération de résumés statistiques en langage naturel
  * - Parsing de descriptions de métiers
  * - Job matching basé sur compétences
+ * - Gestion automatique du fallback entre clés API
  */
 
 let genAI: GoogleGenAI | null = null;
+let currentApiKey: "primary" | "fallback" = "primary";
+let primaryKeyFailures = 0;
 
 /**
  * Initialise le client Gemini (nouvelle API @google/genai)
  */
-function getGenAI(): GoogleGenAI {
-  if (!config.llm.apiKey) {
-    console.error("[LLM] ❌ ERREUR: Clé API Gemini manquante!");
-    console.error(
-      "[LLM] 💡 Assure-toi que VITE_GEMINI_API_KEY est dans ton .env"
+function getGenAI(useFallback: boolean = false): GoogleGenAI {
+  const apiKey = useFallback ? config.llm.apiKeyFallback : config.llm.apiKey;
+
+  if (!apiKey) {
+    const keyType = useFallback
+      ? "fallback (VITE_GEMINI_API_KEY_2)"
+      : "primary (VITE_GEMINI_API_KEY)";
+    console.error(`[LLM] ❌ ERREUR: Clé API Gemini ${keyType} manquante!`);
+    console.error("[LLM] 💡 Assure-toi que les clés sont dans ton .env");
+    throw new Error(
+      `Clé API Gemini ${keyType} manquante dans la configuration`
     );
-    throw new Error("Clé API Gemini manquante dans la configuration");
   }
 
-  if (!genAI) {
-    genAI = new GoogleGenAI({ apiKey: config.llm.apiKey });
+  // Réinitialiser le client si on change de clé
+  if (
+    !genAI ||
+    (useFallback && currentApiKey === "primary") ||
+    (!useFallback && currentApiKey === "fallback")
+  ) {
+    genAI = new GoogleGenAI({ apiKey });
+    currentApiKey = useFallback ? "fallback" : "primary";
     console.log(
-      "[LLM] ✅ Client Gemini initialisé (nouvelle API @google/genai)"
+      `[LLM] ✅ Client Gemini initialisé avec clé ${currentApiKey} (nouvelle API @google/genai)`
     );
     console.log(
       "[LLM] 🔑 Clé API (premiers 10 chars):",
-      config.llm.apiKey.substring(0, 10) + "..."
+      apiKey.substring(0, 10) + "..."
     );
     console.log("[LLM] 🤖 Modèle utilisé:", config.llm.model);
   }
@@ -103,15 +117,20 @@ function parseJSONFromLLM(response: string): Record<string, unknown> {
 }
 
 /**
- * Fonction utilitaire pour appeler le LLM avec gestion d'erreurs
- * Utilise la nouvelle API @google/genai
+ * Fonction utilitaire pour appeler le LLM avec gestion d'erreurs et fallback automatique
+ * Utilise la nouvelle API @google/genai avec switch automatique vers clé fallback si quotas épuisés
  */
-async function callLLM(prompt: string): Promise<string> {
+async function callLLM(
+  prompt: string,
+  retryWithFallback: boolean = true
+): Promise<string> {
+  const useFallback = currentApiKey === "fallback";
+
   try {
-    const ai = getGenAI();
+    const ai = getGenAI(useFallback);
 
     console.log(
-      "[LLM] 📤 Envoi prompt (premiers 200 chars):",
+      `[LLM] 📤 Envoi prompt avec clé ${currentApiKey} (premiers 200 chars):`,
       prompt.substring(0, 200)
     );
 
@@ -148,13 +167,58 @@ async function callLLM(prompt: string): Promise<string> {
       "caractères"
     );
 
+    // Réinitialiser le compteur d'échecs si succès
+    if (currentApiKey === "primary") {
+      primaryKeyFailures = 0;
+    }
+
     return text;
   } catch (error) {
-    console.error("[LLM] ❌ Erreur lors de l'appel:", error);
+    console.error(
+      `[LLM] ❌ Erreur lors de l'appel avec clé ${currentApiKey}:`,
+      error
+    );
     console.error(
       "[LLM] 💡 Détails:",
       error instanceof Error ? error.message : String(error)
     );
+
+    // Vérifier si c'est une erreur de quota et si on peut switcher
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isQuotaIssue =
+      errorMessage.toLowerCase().includes("quota") ||
+      errorMessage.toLowerCase().includes("rate limit") ||
+      errorMessage.toLowerCase().includes("too many requests") ||
+      errorMessage.toLowerCase().includes("resource_exhausted") ||
+      errorMessage.includes("429");
+
+    // Si erreur de quota et clé primaire, essayer le fallback
+    if (
+      isQuotaIssue &&
+      currentApiKey === "primary" &&
+      retryWithFallback &&
+      config.llm.apiKeyFallback
+    ) {
+      console.warn(
+        "[LLM] ⚠️ Quota épuisé sur clé primaire, basculement vers clé fallback..."
+      );
+      primaryKeyFailures++;
+
+      // Forcer le switch vers la clé fallback
+      genAI = null; // Réinitialiser pour forcer la création d'un nouveau client
+      currentApiKey = "fallback";
+
+      // Réessayer avec la clé fallback
+      return callLLM(prompt, false); // false pour éviter boucle infinie
+    }
+
+    // Si déjà sur fallback ou pas de fallback disponible
+    if (currentApiKey === "fallback" || !config.llm.apiKeyFallback) {
+      console.error(
+        "[LLM] ❌ Aucune clé API disponible, impossible de continuer"
+      );
+    }
+
     throw new Error(
       "Erreur lors de la communication avec l'IA. Veuillez réessayer."
     );
@@ -330,7 +394,7 @@ ${
 🎯 STRUCTURE OBLIGATOIRE (phrases courtes, claires, mobile-first) :
 ${
   jobTitles && jobTitles.length > 1
-    ? `0. Une phrase mentionnant les postes concernés (si plusieurs, cite "pour X, Y et Z" ou "pour X, Y et autres")`
+    ? `0. Une phrase mentionnant les postes concernés avec "OU" entre eux : "Pour X, Y ou Z" (PAS "et", mais "OU" car ce sont des variantes du même métier)`
     : jobTitles && jobTitles.length === 1
     ? `0. Une phrase mentionnant le poste concerné : "${jobTitles[0]}"`
     : ""
@@ -355,7 +419,9 @@ ${
 • Oublier de mentionner les meilleurs profils junior/senior
 
 ✅ EXEMPLE (ton attendu) :
-"Le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud !"
+"Pour DevOps, Devops Engineer ou Ingénieur DevOps, le salaire typique est de 50k€. En début de carrière, on démarre autour de 38k€. Avec l'expérience (10+ ans), on atteint facilement 65k€. Le meilleur junior gagne 52k€ chez Scaleway à Paris. Le meilleur senior atteint 120k€ chez Google. La moitié des pros gagnent plus de 48k€. Pour viser le haut, spécialise-toi sur les technos cloud !"
+
+⚠️ IMPORTANT : Utilise "OU" entre les postes (DevOps, Devops OU Ingénieur DevOps), JAMAIS "ET" !
 
 Réponds UNIQUEMENT avec le texte du résumé :`;
 

@@ -60,14 +60,35 @@ export function cleanSalaries(salaries: Salary[]): CleanedSalary[] {
 
 /**
  * Extrait les titres de poste uniques (pour autosuggest)
+ * Gère la casse : "DevOps" et "devops" sont considérés comme identiques
  */
 export function extractUniqueTitles(salaries: Salary[]): string[] {
   const titles = salaries
     .map((s) => s.title)
     .filter((title): title is string => title !== null && title.trim() !== "");
 
-  // Dédupliquer et trier alphabétiquement
-  return Array.from(new Set(titles)).sort();
+  // Dédupliquer en ignorant la casse
+  const uniqueTitlesMap = new Map<string, string>();
+
+  titles.forEach((title) => {
+    const normalized = normalizeTitle(title);
+    // Garde la première occurrence (ou celle avec la meilleure casse)
+    if (!uniqueTitlesMap.has(normalized)) {
+      uniqueTitlesMap.set(normalized, title);
+    } else {
+      // Préférer les titres avec majuscules appropriées (ex: "DevOps" plutôt que "devops")
+      const existing = uniqueTitlesMap.get(normalized)!;
+      const hasMoreUpperCase =
+        (title.match(/[A-Z]/g) || []).length >
+        (existing.match(/[A-Z]/g) || []).length;
+      if (hasMoreUpperCase) {
+        uniqueTitlesMap.set(normalized, title);
+      }
+    }
+  });
+
+  // Retourner les titres uniques triés
+  return Array.from(uniqueTitlesMap.values()).sort();
 }
 
 /**

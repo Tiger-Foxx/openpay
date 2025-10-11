@@ -13,6 +13,7 @@ import { HomeMobile } from "@/pages/HomeMobile";
 import { Results } from "@/pages/Results";
 import { ResultsMobile } from "@/pages/ResultsMobile";
 import { FindMyJob } from "@/pages/FindMyJob";
+import { FindMyJobMobile } from "@/pages/FindMyJobMobile";
 import { AddSalary } from "@/pages/AddSalary";
 import { CameroonSalaries } from "@/pages/CameroonSalaries";
 import { config } from "@/config";
@@ -45,8 +46,11 @@ function App() {
             element={isMobile ? <ResultsMobile /> : <Results />}
           />
 
-          {/* FindMyJob — Même composant Desktop/Mobile (responsive interne) */}
-          <Route path="/find-my-job" element={<FindMyJob />} />
+          {/* FindMyJob — Desktop vs Mobile */}
+          <Route
+            path="/find-my-job"
+            element={isMobile ? <FindMyJobMobile /> : <FindMyJob />}
+          />
 
           {/* AddSalary — Même composant */}
           <Route path="/add-salary" element={<AddSalary />} />

@@ -15,7 +15,8 @@ export interface Salary {
   company: string;
   title: string | null;
   location: string;
-  compensation: number; // Salaire annuel brut en euros
+  compensation: number; // Salaire annuel brut
+  currency?: "EUR" | "XAF"; // Devise (EUR = Euro, XAF = Franc CFA)
   date: string; // ISO 8601
   level: "Junior" | "Mid" | "Senior" | "Lead" | null;
   company_xp: number | null; // Années d'XP dans l'entreprise

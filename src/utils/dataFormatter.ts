@@ -3,10 +3,20 @@
  */
 
 /**
- * Formate un salaire en euros
- * @example formatSalary(65000) => "65 000 €"
+ * Formate un salaire avec la devise appropriée
+ * @example formatSalary(65000, "EUR") => "65 000 €"
+ * @example formatSalary(12000000, "XAF") => "12 000 000 FCFA"
  */
-export function formatSalary(amount: number): string {
+export function formatSalary(
+  amount: number,
+  currency: "EUR" | "XAF" = "EUR"
+): string {
+  if (currency === "XAF") {
+    // Franc CFA - Formatage personnalisé
+    return new Intl.NumberFormat("fr-FR").format(amount) + " FCFA";
+  }
+
+  // Euro - Formatage standard
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
