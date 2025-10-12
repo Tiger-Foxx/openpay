@@ -62,7 +62,7 @@ export const FindMyJobMobile = React.memo(() => {
 
     try {
       const matchedJobs = await findMatchingJobs(formData);
-      setResults(matchedJobs);
+      setResults(matchedJobs.matches || []);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("[FindMyJobMobile] Erreur:", err);
@@ -387,7 +387,7 @@ export const FindMyJobMobile = React.memo(() => {
                   )}
 
                   {/* Roadmaps */}
-                  {match.recommendedRoadmaps.length > 0 && (
+                  {match.recommendedRoadmaps && match.recommendedRoadmaps.length > 0 && (
                     <Collapse
                       title={`🗺️ Roadmaps (${match.recommendedRoadmaps.length})`}
                       defaultOpen={false}

@@ -50,7 +50,7 @@ export const ResultsMobile = React.memo(() => {
       try {
         const allSalaries = await getCombinedSalaries();
         const allTitles = await getUniqueTitles();
-        const mappedTitles = await mapJobTitlesToDatabase(jobQuery, allTitles);
+        const mappedTitles = jobQuery ? await mapJobTitlesToDatabase(jobQuery, allTitles) : [];
 
         if (mappedTitles.length === 0) {
           setError(`Aucun métier trouvé pour "${jobQuery}"`);
@@ -73,7 +73,7 @@ export const ResultsMobile = React.memo(() => {
         const statistics = calculateStatistics(filtered);
         setStats(statistics);
 
-        const summary = await generateStatsSummary(statistics, mappedTitles);
+        const summary = statistics ? await generateStatsSummary(statistics, mappedTitles) : "";
         setAiSummary(summary);
 
         const roadmaps = await recommendRoadmapsForJob(mappedTitles);

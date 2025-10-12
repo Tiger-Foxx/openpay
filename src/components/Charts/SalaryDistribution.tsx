@@ -77,7 +77,7 @@ export const SalaryDistribution = React.memo<SalaryDistributionProps>(
               cursor={{ fill: "rgba(0, 0, 0, 0.05)" }}
             />
             <Bar dataKey="count" radius={[8, 8, 0, 0]}>
-              {chartData.map((entry, index) => (
+              {chartData.map((_entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={index % 2 === 0 ? "#000000" : "#404040"}

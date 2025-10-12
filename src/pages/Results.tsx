@@ -59,7 +59,7 @@ export const Results = React.memo(() => {
         })));
 
         // 3. Mapper le job query vers des titres exacts avec LLM
-        const mappedTitles = await mapJobTitlesToDatabase(jobQuery, allTitles);
+        const mappedTitles = jobQuery ? await mapJobTitlesToDatabase(jobQuery, allTitles) : [];
 
         if (mappedTitles.length === 0) {
           setError(
@@ -103,12 +103,12 @@ export const Results = React.memo(() => {
         const othStats = otherSalaries.length >= 3 ? calculateStatistics(otherSalaries) : undefined;
         
         // 9. Générer le résumé IA avec les stats séparées
-        const summary = await generateStatsSummary(
+        const summary = statistics ? await generateStatsSummary(
           statistics, 
           mappedTitles,
-          camStats,
-          othStats
-        );
+          camStats || undefined,
+          othStats || undefined
+        ) : "";
         setAiSummary(summary);
 
         // 10. Recommander des roadmaps pour ce métier

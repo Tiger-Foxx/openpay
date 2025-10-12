@@ -88,12 +88,12 @@ export const RemoteChart = React.memo<RemoteChartProps>(
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ percentage }) => `${(percentage * 100).toFixed(0)}%`}
+              label={(props: any) => `${((props.percent || 0) * 100).toFixed(0)}%`}
               outerRadius={100}
               fill="#8884d8"
               dataKey="value"
             >
-              {chartData.map((entry, index) => {
+              {chartData.map((_entry, index) => {
                 const variant = data[index]?.variant || "none";
                 return <Cell key={`cell-${index}`} fill={COLORS[variant]} />;
               })}

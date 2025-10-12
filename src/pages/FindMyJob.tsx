@@ -8,7 +8,7 @@ import { UserSkills, JobMatchResult } from "@/models/jobMatch";
 import { findMatchingJobs } from "@/services/jobMatcher";
 import { formatSalary } from "@/utils/dataFormatter";
 import { Collapse } from "@/components/UI/Collapse";
-import { Sparkles, Briefcase } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Lottie from "lottie-react";
 import foxZenAnimation from "@/assets/lotties/fox-zen.json";
 import workBalanceAnimation from "@/assets/lotties/Work and life balance.json";
