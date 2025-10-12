@@ -15,8 +15,20 @@ export const SalaryTableMobile = React.memo<SalaryTableMobileProps>(
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    const totalPages = Math.ceil(salaries.length / itemsPerPage);
-    const paginatedSalaries = salaries.slice(
+    // Trier pour mettre les salaires camerounais en premier
+    const sortedSalaries = [...salaries].sort((a, b) => {
+      const aIsCameroon = a.country === "Cameroun";
+      const bIsCameroon = b.country === "Cameroun";
+      
+      if (aIsCameroon && !bIsCameroon) return -1; // Cameroun en premier
+      if (!aIsCameroon && bIsCameroon) return 1;
+      
+      // Si même pays, trier par salaire décroissant
+      return b.compensation - a.compensation;
+    });
+
+    const totalPages = Math.ceil(sortedSalaries.length / itemsPerPage);
+    const paginatedSalaries = sortedSalaries.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );

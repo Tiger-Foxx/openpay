@@ -80,29 +80,32 @@ export const Results = React.memo(() => {
           return;
         }
 
-        // Garder les salaires originaux pour l'affichage dans les tableaux
-        setMatchedSalaries(filtered);
-
         // 5. Séparer les salaires par pays AVANT normalisation
         const cameroonSalaries = filtered.filter(s => s.country === "Cameroun");
         const otherSalaries = filtered.filter(s => s.country !== "Cameroun");
 
         console.log(`[Results] Salaires trouvés: ${filtered.length} total (${cameroonSalaries.length} Cameroun, ${otherSalaries.length} autres)`);
 
-        // 6. Normaliser les salaires en EUR pour les calculs de statistiques globales
-        const { normalizeSalariesForCalculations } = await import("@/utils/currencyConverter");
-        const normalized = normalizeSalariesForCalculations(filtered);
-        setNormalizedSalaries(normalized);
+        // 6. Garder les salaires originaux pour l'affichage dans les tableaux (tous les salaires)
+        setMatchedSalaries(filtered);
 
-        // 7. Calculer les statistiques GLOBALES avec salaires normalisés en EUR
-        const statistics = calculateStatistics(normalized);
+        // 7. Normaliser UNIQUEMENT les salaires non-camerounais pour les calculs de statistiques
+        // Les salaires camerounais ne sont JAMAIS inclus dans les stats globales, même s'il y en a qu'un seul
+        const { normalizeSalariesForCalculations } = await import("@/utils/currencyConverter");
+        const normalizedOtherSalaries = normalizeSalariesForCalculations(otherSalaries);
+        setNormalizedSalaries(normalizedOtherSalaries);
+
+        // 8. Calculer les statistiques GLOBALES uniquement avec les salaires NON-CAMEROUNAIS normalisés en EUR
+        // Ceci évite de mélanger FCFA et EUR dans les stats globales
+        const statistics = otherSalaries.length >= 5 ? calculateStatistics(normalizedOtherSalaries) : null;
         setStats(statistics);
 
-        // 8. Calculer les stats séparées par pays (SANS normalisation pour garder les vraies valeurs)
-        const camStats = cameroonSalaries.length >= 3 ? calculateStatistics(cameroonSalaries) : undefined;
-        const othStats = otherSalaries.length >= 3 ? calculateStatistics(otherSalaries) : undefined;
+        // 9. Calculer les stats séparées par pays (SANS normalisation pour garder les vraies valeurs)
+        // On calcule les stats camerounaises même s'il y a moins de 3 salaires (pour info)
+        const camStats = cameroonSalaries.length >= 1 ? calculateStatistics(cameroonSalaries) : undefined;
+        const othStats = otherSalaries.length >= 5 ? calculateStatistics(otherSalaries) : undefined;
         
-        // 9. Générer le résumé IA avec les stats séparées
+        // 10. Générer le résumé IA avec les stats séparées
         const summary = statistics ? await generateStatsSummary(
           statistics, 
           mappedTitles,

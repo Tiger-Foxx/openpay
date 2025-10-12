@@ -20,9 +20,17 @@ export const SalaryTable = React.memo<SalaryTableProps>(
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
 
-    // Tri
+    // Tri avec priorisation des salaires camerounais
     const sortedSalaries = useMemo(() => {
       return [...salaries].sort((a, b) => {
+        // 1. TOUJOURS placer les salaires camerounais en premier
+        const aIsCameroon = a.country === "Cameroun";
+        const bIsCameroon = b.country === "Cameroun";
+
+        if (aIsCameroon && !bIsCameroon) return -1; // a (Cameroun) avant b
+        if (!aIsCameroon && bIsCameroon) return 1;  // b (Cameroun) avant a
+
+        // 2. Si les deux sont camerounais OU les deux sont non-camerounais, trier normalement
         let aVal: any = a[sortKey];
         let bVal: any = b[sortKey];
 

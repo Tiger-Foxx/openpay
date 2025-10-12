@@ -68,12 +68,28 @@ export const ResultsMobile = React.memo(() => {
           return;
         }
 
+        // Séparer les salaires par pays AVANT les calculs
+        const cameroonSalaries = filtered.filter(s => s.country === "Cameroun");
+        const otherSalaries = filtered.filter(s => s.country !== "Cameroun");
+
+        console.log(`[ResultsMobile] Salaires trouvés: ${filtered.length} total (${cameroonSalaries.length} Cameroun, ${otherSalaries.length} autres)`);
+
+        // Garder tous les salaires pour l'affichage (y compris Cameroun)
         setMatchedSalaries(filtered);
 
-        const statistics = calculateStatistics(filtered);
+        // Normaliser UNIQUEMENT les salaires non-camerounais pour les stats
+        const { normalizeSalariesForCalculations } = await import("@/utils/currencyConverter");
+        const normalizedOtherSalaries = normalizeSalariesForCalculations(otherSalaries);
+
+        // Calculer les stats GLOBALES uniquement avec les salaires NON-CAMEROUNAIS
+        const statistics = otherSalaries.length >= 5 ? calculateStatistics(normalizedOtherSalaries) : null;
         setStats(statistics);
 
-        const summary = statistics ? await generateStatsSummary(statistics, mappedTitles) : "";
+        // Calculer les stats séparées (pour l'IA)
+        const camStats = cameroonSalaries.length >= 1 ? calculateStatistics(cameroonSalaries) : undefined;
+        const othStats = otherSalaries.length >= 5 ? calculateStatistics(otherSalaries) : undefined;
+
+        const summary = statistics ? await generateStatsSummary(statistics, mappedTitles, camStats, othStats) : "";
         setAiSummary(summary);
 
         const roadmaps = await recommendRoadmapsForJob(mappedTitles);
