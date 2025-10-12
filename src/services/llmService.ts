@@ -438,11 +438,13 @@ ${
     ? `0. Une phrase mentionnant le poste concerné : "${jobTitles[0]}"`
     : ""
 }
-1. Une phrase sur le salaire typique (médiane)
-2. Une phrase sur l'évolution junior → senior avec les moyennes
-3. Une phrase mentionnant le meilleur profil junior si disponible
+1. Une phrase sur le salaire typique global (médiane)
+${statsCameroon ? `2. 🇨🇲 OBLIGATOIRE : 2-3 phrases DÉDIÉES aux salaires camerounais en FCFA (médiane, junior, senior) - Ne PAS oublier cette section !` : ""}
+${statsOther ? `3. 🇪🇺 OBLIGATOIRE : 2-3 phrases DÉDIÉES aux salaires France/Europe en EUR (médiane, junior, senior)` : ""}
+${statsCameroon || statsOther ? `4. Une phrase mentionnant les meilleurs profils si disponibles` : `2. Une phrase sur l'évolution junior → senior avec les moyennes`}
+${statsCameroon || statsOther ? `5. Une phrase d'encouragement ou conseil actionnable` : `3. Une phrase mentionnant le meilleur profil junior si disponible
 4. Une phrase mentionnant le meilleur profil senior si disponible
-5. Une phrase d'encouragement ou conseil actionnable
+5. Une phrase d'encouragement ou conseil actionnable`}
 
 ✍️ RÈGLES D'OR :
 • PHRASES COURTES (15-20 mots max chacune)
@@ -451,19 +453,36 @@ ${
 • TON conversationnel et encourageant
 • MOBILE-FIRST : pas de mise en page complexe, juste des phrases qui se lisent facilement
 
-🌍 STATS PAR PAYS (IMPORTANT) :
-${statsCameroon ? `• SI des stats Cameroun sont disponibles : ajoute 2-3 phrases SPÉCIFIQUES sur les salaires au Cameroun en FCFA (médiane, junior, senior)
-• Exemple : "Au Cameroun, le salaire médian est de 18M FCFA. Un junior démarre à 8M FCFA, un senior atteint 35M FCFA."` : ""}
-${statsOther ? `• SI des stats France/Europe sont disponibles : détaille également ces stats en EUR séparément
-• Compare brièvement les deux marchés si les deux sont présents` : ""}
-• TOUJOURS mentionner la devise (FCFA ou €) pour éviter toute confusion
+🌍 STATS PAR PAYS (CRITIQUE - NE PAS IGNORER) :
+${statsCameroon ? `
+🚨 ATTENTION 🇨🇲 : Des stats CAMEROUN sont disponibles !
+• Tu DOIS ABSOLUMENT créer une section spécifique pour le Cameroun dans ton résumé
+• Format attendu : "Au Cameroun, le salaire médian est de ${Math.round(statsCameroon.median).toLocaleString()} FCFA. Les juniors démarrent à ${Math.round(statsCameroon.leastExperiencedAvg).toLocaleString()} FCFA. Les seniors atteignent ${Math.round(statsCameroon.mostExperiencedAvg).toLocaleString()} FCFA."
+• NE PAS oublier de mentionner "Au Cameroun" ou "🇨🇲" pour séparer visuellement
+• OBLIGATOIRE : Toujours préciser "FCFA" après chaque montant camerounais
+` : ""}
+${statsOther ? `
+🚨 ATTENTION 🇪🇺 : Des stats FRANCE/EUROPE sont disponibles !
+• Tu DOIS ABSOLUMENT créer une section spécifique pour l'Europe dans ton résumé
+• Format attendu : "En France et Europe, le salaire médian est de ${Math.round(statsOther.median).toLocaleString()}€. Les juniors démarrent à ${Math.round(statsOther.leastExperiencedAvg).toLocaleString()}€. Les seniors atteignent ${Math.round(statsOther.mostExperiencedAvg).toLocaleString()}€."
+• OBLIGATOIRE : Toujours préciser "€" après chaque montant européen
+` : ""}
+${statsCameroon && statsOther ? `
+⚠️ DOUBLE CONTEXTE : Tu as à la fois des stats Cameroun ET Europe !
+• Ton résumé DOIT avoir deux sections distinctes et claires
+• Utilise des séparateurs visuels : "Au Cameroun 🇨🇲" puis "En France et Europe 🇪🇺"
+• JAMAIS mélanger FCFA et EUR dans la même phrase
+` : ""}
+• RÈGLE D'OR : Si statsCameroon existe, le Cameroun DOIT apparaître dans le résumé final
 
-❌ INTERDICTIONS :
+❌ INTERDICTIONS ABSOLUES :
 • Markdown, JSON, titres
 • Phrases de plus de 25 mots
 • Formulations techniques ou corporate
 • Oublier de mentionner les meilleurs profils junior/senior
 • Mélanger FCFA et EUR dans la même phrase sans préciser
+• 🚨 CRITIQUE : Ignorer les stats Cameroun si elles sont fournies dans statsCameroon
+• 🚨 CRITIQUE : Ne pas créer de section séparée pour le Cameroun quand des stats sont disponibles
 
 ✅ EXEMPLE (ton attendu avec stats séparées) :
 "Pour DevOps Engineer, le salaire global médian est de 50k€. Au Cameroun, la médiane est de 18M FCFA avec des juniors à 8M et des seniors à 35M FCFA. En France et Europe, la médiane est de 52k€. Les juniors européens démarrent à 38k€ et les seniors atteignent 70k€. Le meilleur junior camerounais gagne 12M FCFA chez Orange à Douala. Le meilleur senior européen atteint 120k€ chez Google à Paris. Pour viser le haut, spécialise-toi en cloud et DevOps ! Plus bas, des roadmaps de formation vous attendent."

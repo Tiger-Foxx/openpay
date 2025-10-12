@@ -32,6 +32,7 @@ export const ResultsMobile = React.memo(() => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [matchedSalaries, setMatchedSalaries] = useState<CleanedSalary[]>([]);
+  const [normalizedSalaries, setNormalizedSalaries] = useState<CleanedSalary[]>([]);
   const [stats, setStats] = useState<SalaryStatistics | null>(null);
   const [aiSummary, setAiSummary] = useState<string>("");
   const [recommendedRoadmaps, setRecommendedRoadmaps] = useState<string[]>([]);
@@ -80,6 +81,7 @@ export const ResultsMobile = React.memo(() => {
         // Normaliser UNIQUEMENT les salaires non-camerounais pour les stats
         const { normalizeSalariesForCalculations } = await import("@/utils/currencyConverter");
         const normalizedOtherSalaries = normalizeSalariesForCalculations(otherSalaries);
+        setNormalizedSalaries(normalizedOtherSalaries);
 
         // Calculer les stats GLOBALES uniquement avec les salaires NON-CAMEROUNAIS
         const statistics = otherSalaries.length >= 5 ? calculateStatistics(normalizedOtherSalaries) : null;
@@ -202,8 +204,8 @@ export const ResultsMobile = React.memo(() => {
       {/* Experience */}
       <ExperienceBreakdown data={stats.experienceBreakdown} />
 
-      {/* Main Chart */}
-      <SalaryDistribution salaries={matchedSalaries} />
+      {/* Main Chart - Utiliser normalizedSalaries (EUR uniquement, sans Cameroun) */}
+      <SalaryDistribution salaries={normalizedSalaries} />
 
       {/* Additional Charts */}
       {showAllCharts && (
