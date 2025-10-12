@@ -89,7 +89,7 @@ export const ResultsMobile = React.memo(() => {
         const camStats = cameroonSalaries.length >= 1 ? calculateStatistics(cameroonSalaries) : undefined;
         const othStats = otherSalaries.length >= 5 ? calculateStatistics(otherSalaries) : undefined;
 
-        const summary = statistics ? await generateStatsSummary(statistics, mappedTitles, camStats, othStats) : "";
+        const summary = statistics ? await generateStatsSummary(statistics, mappedTitles, camStats || undefined, othStats || undefined) : "";
         setAiSummary(summary);
 
         const roadmaps = await recommendRoadmapsForJob(mappedTitles);
