@@ -17,10 +17,10 @@ import { config } from "@/config";
  */
 
 // En dev: utilise le proxy Vite (/api/salaries -> https://salaires.dev/api/salaries)
-// En prod: utilise l'URL complète
+// En prod: utilise le proxy Vercel serverless pour éviter CORS
 const API_ENDPOINT = import.meta.env.DEV
   ? "/api/salaries"
-  : config.salariesApi.endpoint;
+  : "/api/proxy-salaries";
 const CACHE_KEY = "salaries_data";
 const TITLES_CACHE_KEY = "unique_titles";
 
