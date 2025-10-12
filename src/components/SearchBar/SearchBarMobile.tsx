@@ -136,6 +136,19 @@ export const SearchBarMobile = React.memo<SearchBarMobileProps>(
 
             {/* Search Form */}
             <form onSubmit={handleSubmit} className="mb-4">
+              {/* Helper text avec IA */}
+              <div className="mt-3 px-1">
+                <p className="text-xs text-gray-700 mb-1">
+                  <span className="bg-green-100 text-green-800 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                    Astuce
+                  </span>{" "}
+                  L'IA analyse votre recherche
+                </p>
+                <p className="text-[11px] text-gray-500 leading-relaxed">
+                  Tapez en langage naturel : "je suis dev front end junior",
+                  "backend Python"... Ne vous souciez pas des suggestions !
+                </p>
+              </div>
               <div className="relative">
                 <input
                   type="text"
@@ -171,19 +184,7 @@ export const SearchBarMobile = React.memo<SearchBarMobileProps>(
                 )}
               </div>
 
-              {/* Helper text avec IA */}
-              <div className="mt-3 px-1">
-                <p className="text-xs text-gray-700 mb-1">
-                  <span className="bg-green-100 text-green-800 px-1.5 py-0.5 rounded text-[10px] font-bold">
-                    Astuce
-                  </span>{" "}
-                  L'IA analyse votre recherche
-                </p>
-                <p className="text-[11px] text-gray-500 leading-relaxed">
-                  Tapez en langage naturel : "je suis dev front end junior",
-                  "backend Python"... Ne vous souciez pas des suggestions !
-                </p>
-              </div>
+              
             </form>
 
             {/* Quick Examples */}
