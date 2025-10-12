@@ -294,14 +294,16 @@ ${limitedTitles.map((title, idx) => `${idx + 1}. ${title}`).join("\n")}
    • Variantes orthographiques EXACTES du même poste
    • Traductions FR/EN du même poste
    • Abréviations communes du même poste
+   • Les sous categories de postes , par exemple , dev et dev python , si l'utilisateur entre "dev"
    • Niveaux différents du MÊME métier (si niveau non spécifié)
+   • Metier vraiment pareil mais moins precis , par exemple : Dev FullStack et devFullStack JS c'est pareil c'est dev full stack
+
 
 📊 EXEMPLES DE MATCHING CORRECT :
    Input: "CloudOps" → Match: "Cloud Ops", "Cloud Operations Engineer", "CloudOps Engineer"
    Input: "CloudOps" → ❌ PAS: "Administrateur Système", "DevOps", "Architecte Infra"
    
-   Input: "Data Scientist" → Match: "Data Scientist", "Scientist Data", "Senior Data Scientist"
-   Input: "Data Scientist" → ❌ PAS: "Data Engineer", "Data Analyst", "ML Engineer"
+   Input: "Data Scientist" → Match: "Data Scientist", "Scientist Data", "Senior Data Scientist" et match aussi tout ce que data scientist englobe , par exemple les sous categories
    
    Input: "Backend Developer" → Match: "Backend Developer", "Développeur Backend", "Backend Engineer"
    Input: "Backend Developer" → ❌ PAS: "Full Stack Developer", "DevOps Engineer"
