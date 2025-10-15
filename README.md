@@ -3,8 +3,8 @@
 #  OpenPay
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/public/logo-open.png" alt="Logo Open" width="150"/>
-  <img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/public/logo-pay.png" alt="Logo Pay" width="150"/>
+
+  <img src="https://raw.githubusercontent.com/Tiger-Foxx/openpay/main/public/favicon.png" alt="Logo Pay" width="150"/>
 </p>
 
 ### Enfin Savoir Combien Tu Vaux (ou pas) sur le Marché Tech
